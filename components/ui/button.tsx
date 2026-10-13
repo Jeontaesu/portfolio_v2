@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils/cn";
 
 // CVA is used here because Button combines two independent axes (variant × size).
 const buttonVariants = cva(
-  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm font-semibold whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
+  "inline-flex cursor-pointer items-center justify-center gap-2 rounded-sm font-semibold whitespace-nowrap transition-[color,background-color,border-color,opacity] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
   {
     variants: {
       variant: {

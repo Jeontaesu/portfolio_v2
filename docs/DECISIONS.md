@@ -113,3 +113,13 @@
 - `next dev`가 `AGENTS.md`를 자동 생성해서 `next.config.ts`에 `agentRules: false`를 설정했다 (`CLAUDE.md`가 단일 기준).
 - Footer·Contact는 `content/profile.ts`에 값이 있는 링크만 렌더링한다. Velog URL과 이메일은 `[TBD]`(사용자 제공 대기).
 - **날짜**: 2026-10-13
+
+## D-017. Step 7 브라우저 검증에서 찾은 문제
+
+Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정했다.
+
+- **스크롤 잠금**: `@radix-ui/react-dialog` 1.3.0은 `Dialog.Overlay`가 스크롤 잠금을 담당한다. Content가 전체 화면이라 Overlay를 생략했더니 메뉴가 열린 채 배경이 스크롤됐다. Overlay를 추가해 해결 (wheel 스크롤 후 `scrollY=0` 확인).
+- **포커스 링 깜빡임**: Button의 `transition-colors`가 `outline-color`까지 전환해 포커스 직후 링이 흰색에서 파란색으로 서서히 바뀌었다. 전환 대상을 `color, background-color, border-color, opacity`로 한정.
+- **로고 터치 타겟**: 로고 링크 높이가 25~28px이라 `min-h-11`(44px)로 수정.
+- **검증 범위**: 가로 넘침 없음, h1 크기(40/72px), Pretendard 로드, nav/메뉴 전환, 헤더 높이, 44px 터치 타겟, 콘솔 오류 없음, Skip link, 포커스 링, 모바일 메뉴(열기, focus trap, Esc, 포커스 복귀). 스크린 리더 실제 낭독은 검증하지 않았다.
+- **날짜**: 2026-10-13

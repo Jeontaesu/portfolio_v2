@@ -8,7 +8,10 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between md:h-20">
-        <Link href="/" className="text-h4 font-bold tracking-tight">
+        <Link
+          href="/"
+          className="inline-flex min-h-11 items-center text-h4 font-bold tracking-tight"
+        >
           {profile.brand}
         </Link>
         <nav aria-label="주요 메뉴" className="hidden md:block">

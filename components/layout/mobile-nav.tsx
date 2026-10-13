@@ -18,10 +18,12 @@ export function MobileNav() {
         <Menu className="size-6" aria-hidden="true" />
       </Dialog.Trigger>
       <Dialog.Portal>
+        {/* Radix 1.3 applies the scroll lock via Overlay, so it must be rendered even though Content is full-screen. */}
+        <Dialog.Overlay className="fixed inset-0 z-50 md:hidden" />
         <Dialog.Content className="fixed inset-0 z-50 flex flex-col bg-background md:hidden">
           <div className="container-page flex h-16 shrink-0 items-center justify-between">
             <Dialog.Close asChild>
-              <Link href="/" className="text-h4">
+              <Link href="/" className="inline-flex min-h-11 items-center text-h4">
                 {profile.brand}
               </Link>
             </Dialog.Close>
