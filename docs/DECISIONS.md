@@ -41,7 +41,8 @@
 
 - **이유**: registry 최신은 7.0.2. 다만 Next 16 / typescript-eslint 호환은 설치 시점에 검증한다.
 - **규칙**: 호환 문제가 있으면 6.x 최신 안정 버전을 쓰고 사용자에게 보고한다. 검증 결과는 이 항목에 기록한다.
-- **상태**: 설치 시 확정
+- **결과 (2026-10-13)**: 7.0.2로 설치하면 `typescript-eslint 8.71.1`이 "does not support TS 7.0" 오류로 ESLint를 실행하지 못한다 (peer 범위 `>=4.8.4 <6.1.0`). **TypeScript 6.0.3으로 확정** (6.x 최신 안정). 7.x는 typescript-eslint가 지원하면 재검토한다 (추적: typescript-eslint/typescript-eslint#10940).
+- **상태**: 확정 (6.0.3)
 - **날짜**: 2026-10-13
 
 ## D-007. `src/` 폴더 미사용
@@ -74,4 +75,25 @@
 - 태블릿(768–1023px)은 8열 레이아웃 + 타이포 Mobile 값 (`lg` 미만 기준).
 - Input 경계선 색(`--border` 대비 1.24)은 Input 컴포넌트 작업 시 확정한다.
 - 시간 부족 시 줄이는 순서는 `docs/ROADMAP.md` 기준으로 통일한다.
+- **날짜**: 2026-10-13
+
+## D-012. 저장소를 새 이력으로 재생성
+
+- **결정**: 상위 저장소(KOSMCO 포함)가 이미 `portfolio_v2` 원격에 올라가 있어서, `portfolio/`에서 새로 `git init` 후 `--force-with-lease`로 원격 `main`을 새 이력(`f39e2e7`)으로 교체했다. 원격에 KOSMCO 파일이 남지 않은 것을 `git ls-tree`로 확인했다.
+- **주의**: 이전 커밋 SHA(`b9f2619`)는 GitHub에 한동안 캐시로 남을 수 있다. 저장소 공개 여부는 확인하지 못했다.
+- **날짜**: 2026-10-13
+
+## D-013. create-next-app 기본값 중 바꾼 것
+
+- `cacheComponents: true`, `partialPrefetching: true`를 제거했다. Phase 1은 정적 콘텐츠 사이트라 불필요하고, 캐싱은 의도적으로 결정한다는 `CLAUDE.md §6` 규칙에 맞춘다. 필요해지면 그때 도입한다.
+- `AGENTS.md`는 복사하지 않았다 (`CLAUDE.md`가 기준 문서).
+- `typecheck`는 Next가 생성하는 전역 타입(`LayoutProps` 등)을 쓰므로 `next typegen && tsc --noEmit`.
+- 스캐폴드는 임시 폴더에 생성한 뒤 필요한 파일만 복사했다 (기존 CLAUDE.md 덮어쓰기 방지).
+- **날짜**: 2026-10-13
+
+## D-014. 포맷터 범위와 pnpm 설치 방식
+
+- Prettier는 `CLAUDE.md`와 `docs/`를 대상에서 제외한다 (문서 표·박스 도식이 재배치되어 diff가 커짐).
+- pnpm은 `corepack enable`이 `C:\Program Files\nodejs` 쓰기 권한 문제(EPERM)로 실패해 `npm i -g pnpm@12.11.2`로 설치했다. `packageManager` 필드로 버전은 고정되어 있다.
+- 줄바꿈은 `.gitattributes`의 `* text=auto eol=lf`로 통일했다.
 - **날짜**: 2026-10-13

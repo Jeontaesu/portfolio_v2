@@ -72,7 +72,7 @@
 | Next.js | 16.4.0 (App Router) |
 | React | 19.3.0 |
 | Tailwind CSS | v4.3.3 — 토큰은 `globals.css`의 `@theme`에서 정의, `tailwind.config` 없음 |
-| TypeScript | 7.0.2 목표. 설치 시점에 Next 16 / ESLint(typescript-eslint) 호환을 확인하고, 문제가 있으면 6.x 최신 안정 버전을 사용한 뒤 사용자에게 보고 |
+| TypeScript | **6.0.3** (7.0.2는 typescript-eslint 8.71.1 미지원으로 ESLint 실행 불가, D-006). strict + `noUncheckedIndexedAccess` |
 | 아이콘 | `lucide-react` 1.55.0 하나로 통일 |
 | 프로젝트 구조 | `src/` 사용 안 함 — 루트에 `app/`, `components/`, `content/`, `lib/` |
 | 저장소 | `portfolio/`를 독립 Git 저장소로 분리 (KOSMCO 프로젝트와 분리, 아래 참고) |
@@ -85,13 +85,13 @@
 
 ## 3. 명령어
 
-pnpm 기준. `[TBD]` 프로젝트 생성 후 실제 스크립트로 확정한다 (아래는 목표).
+pnpm 기준. Phase 1 스크립트는 `package.json`과 일치하며, Phase 2 줄은 아직 목표다.
 
 ```bash
 pnpm dev                 # 개발 서버
 pnpm build               # 프로덕션 빌드
 pnpm lint                # ESLint
-pnpm typecheck           # tsc --noEmit
+pnpm typecheck           # next typegen && tsc --noEmit
 pnpm format              # Prettier
 # Phase 2
 pnpm prisma migrate dev  # 스키마 변경 → migration
