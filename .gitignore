@@ -43,3 +43,9 @@ next-env.d.ts
 
 # local Claude Code settings
 /.claude/settings.local.json
+
+# Pretendard: only the woff2 weights loaded in app/layout.tsx are tracked
+public/fonts/*
+!public/fonts/Pretendard-Regular.woff2
+!public/fonts/Pretendard-SemiBold.woff2
+!public/fonts/Pretendard-Bold.woff2
