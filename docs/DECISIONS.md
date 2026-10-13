@@ -97,3 +97,19 @@
 - pnpm은 `corepack enable`이 `C:\Program Files\nodejs` 쓰기 권한 문제(EPERM)로 실패해 `npm i -g pnpm@12.11.2`로 설치했다. `packageManager` 필드로 버전은 고정되어 있다.
 - 줄바꿈은 `.gitattributes`의 `* text=auto eol=lf`로 통일했다.
 - **날짜**: 2026-10-13
+
+## D-015. Badge는 tinted 배경 대신 흰 surface + 상태 텍스트 토큰 + 점
+
+- **이유**: 상태색 10% tint 위에 상태 텍스트를 놓으면 대비가 primary 4.49 / success 4.50 / warning 4.50 / destructive 4.13으로 4.5:1에 못 미친다. 투명도를 4%까지 낮춰도 destructive는 `#FAFAFA` 위에서 4.37이라 통과하지 못한다. 흰 surface 위 텍스트 대비는 문서 §2.2 표 기준 4.83 이상이다.
+- **방법**: 배경 `surface` + 테두리 `border`(장식용) + 상태 텍스트 토큰, 색 외 단서로 점(dot) 표시.
+- **trade-off**: tint보다 시각적 강도가 약하다. 새 색 토큰이 필요 없고 대비가 보장된다.
+- **날짜**: 2026-10-13
+
+## D-016. 헤더 네비게이션 전환 기준과 기타 구현 결정
+
+- 데스크톱 메뉴는 `md`(768px) 이상에서 보이고, 미만에서는 Radix Dialog 전체 화면 메뉴로 전환한다 (레이아웃 breakpoint 기준).
+- Button `sm`은 40px로 44px 터치 타겟에 못 미친다. 밀도가 높은 데스크톱 UI용이며 `md`(44px), `lg`(48px)를 기본으로 쓴다.
+- CVA는 variant × size 두 축을 가진 Button, Badge에만 쓴다.
+- `next dev`가 `AGENTS.md`를 자동 생성해서 `next.config.ts`에 `agentRules: false`를 설정했다 (`CLAUDE.md`가 단일 기준).
+- Footer·Contact는 `content/profile.ts`에 값이 있는 링크만 렌더링한다. Velog URL과 이메일은 `[TBD]`(사용자 제공 대기).
+- **날짜**: 2026-10-13
