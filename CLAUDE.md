@@ -224,7 +224,7 @@ Comment   (P1) id, postId → Post, author, content, createdAt
 - Category 삭제 시 게시글은 `categoryId = null` (SetNull). `[TBD]` 확정 필요.
 - 공개 페이지는 `status = PUBLISHED`만 조회. 정렬: Post `publishedAt desc`, Project `sortOrder asc`.
 - Home Selected Works = `featured = true` 프로젝트.
-- About / Career / Resume 콘텐츠 출처 `[TBD]` 권장: P0는 코드 내 정적 데이터(`content/` 또는 `lib/data/`), CMS화는 이후.
+- About / Career / Resume 콘텐츠 출처: P0는 `content/profile.ts`의 정적 데이터 (§5 구조와 동일), CMS화는 이후. 값이 없는 항목(링크 등)은 렌더링하지 않는다.
 - 이후 후보: Tag, PostTag(P1), Media, View, Like(P2).
 
 ---
