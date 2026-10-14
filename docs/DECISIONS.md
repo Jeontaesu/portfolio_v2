@@ -156,3 +156,13 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **기술 목록**: 기술서에 있는 것만 "실무 사용"에 넣었다. 기존 디자인 문서의 jQuery는 기술서에 없어 제외했다. React는 "협업 퍼블리싱"으로 한정했다.
 - **링크**: Velog, Notion을 `ProfileLinks` 한 곳에서 Footer·Contact·`/contact`에 노출한다. Email은 값이 없어 아직 숨긴다.
 - **날짜**: 2026-10-14
+
+## D-021. SEO: 사이트 URL, Preview noindex, OG 이미지
+
+- **사이트 URL**: `lib/seo/site.ts`가 `NEXT_PUBLIC_SITE_URL` → `VERCEL_PROJECT_PRODUCTION_URL`(Vercel이 자동 주입) → `localhost` 순으로 정한다. 커스텀 도메인 전까지 환경 변수 설정이 필요 없다. Preview 배포에서도 canonical은 프로덕션 도메인을 가리킨다.
+- **Preview 차단**: `VERCEL_ENV`가 `production`이 아니면 `<meta name="robots" content="noindex, nofollow">`와 `robots.txt`의 `Disallow: /`를 낸다. 같은 내용의 공개 Preview URL이 검색 결과에 중복으로 잡히는 것을 막는다.
+- **검증**: 환경 변수로 Preview/Production 빌드를 각각 흉내 내 robots 메타, `robots.txt`, canonical이 의도대로 나오는 것을 확인했다. 실제 Vercel 배포에서는 아직 확인하지 않았다.
+- **OG 이미지**: `next/og`로 빌드 시 생성한다 (Home, 글별, Case Study별). Satori가 woff2를 읽지 못해 `public/fonts`의 Pretendard TTF를 쓴다. 외부 이미지 서비스나 수작업 이미지가 필요 없고, 글을 추가하면 이미지도 자동으로 생긴다. trade-off: 빌드 시간과 함수 번들에 TTF(약 2.6MB × 2)가 포함된다.
+- **JSON-LD**: 블로그 글에만 `BlogPosting`을 넣었다. `author.name`은 실명이 정해지지 않아 브랜드명(MEFLOWEB)을 쓴다. `Person`은 공개할 이름이 정해지면 추가한다.
+- **not-found**: `app/not-found.tsx`는 `(site)` 그룹 밖이라 레이아웃을 받지 못한다. 그래서 `SiteShell`(SkipLink·Header·main·Footer)을 컴포넌트로 분리해 `(site)/layout.tsx`와 함께 쓴다.
+- **날짜**: 2026-10-14

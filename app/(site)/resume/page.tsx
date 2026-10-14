@@ -3,11 +3,13 @@ import { Download } from "lucide-react";
 
 import { CareerTimeline } from "@/components/features/career/career-timeline";
 import { profile } from "@/content/profile";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Resume",
   description: "경력 요약과 이력서 PDF.",
-};
+  path: "/resume",
+});
 
 export default function ResumePage() {
   return (

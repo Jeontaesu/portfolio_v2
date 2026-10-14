@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { profile } from "@/content/profile";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "About",
   description: `웹 퍼블리셔 ${profile.careerYears}년 경력에서 프론트엔드 개발자로 확장하고 있습니다.`,
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

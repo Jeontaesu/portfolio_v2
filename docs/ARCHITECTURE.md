@@ -21,7 +21,7 @@ app/(site)/   ← Server Component 기본, 정적 생성                        
 - `status: DRAFT`는 빌드에서 제외한다.
 - 이후 단계에서 DB로 옮길 때는 `lib/content/` 내부만 바꾸고 페이지 코드는 유지한다.
 
-**현재 실제 상태**: `lib/content/`는 `posts.ts`, `projects.ts`, `types.ts`가 있고, `lib/markdown/`은 `render.ts`(파이프라인)와 `toc.ts`가 있다. `lib/seo/`는 비어 있다. `content/posts/`, `content/projects/`에는 아직 실제 글이 없고 `content/projects.ts`는 빈 배열이다. About/Career/Resume/Contact/Footer는 `content/profile.ts`를 직접 import한다 (경력은 `career`, 링크·기술은 `profile`). 콘텐츠가 이 한 파일이라 `lib/content/`로 감싸는 것은 CMS화 시점으로 미룬다.
+**현재 실제 상태**: `lib/content/`는 `posts.ts`, `projects.ts`, `types.ts`가 있고, `lib/markdown/`은 `render.ts`(파이프라인)와 `toc.ts`가 있다. `lib/seo/`는 `site.ts`(사이트 URL·인덱싱 여부), `metadata.ts`, `og-image.tsx`가 있다. 콘텐츠: 블로그 글 2개(`content/posts/`), Case Study 3개(`content/projects.ts` + `content/projects/*.md`). About/Career/Resume/Contact/Footer는 `content/profile.ts`를 직접 import한다 (경력은 `career`, 링크·기술은 `profile`). 콘텐츠가 이 한 파일이라 `lib/content/`로 감싸는 것은 CMS화 시점으로 미룬다.
 
 파이프라인 순서와 이유는 D-019. `status: DRAFT`는 `lib/content`에서 걸러져 어떤 페이지에도 노출되지 않는다.
 
@@ -30,16 +30,16 @@ app/(site)/   ← Server Component 기본, 정적 생성                        
 | 라우트 | 상태 |
 |---|---|
 | `/` | 구현됨 (Selected Works·Blog Preview는 실제 데이터 연결, About·Career는 골격) |
-| `/blog` (`?category=`), `/blog/[slug]` | 구현됨 (콘텐츠 없음: empty state) |
-| `/projects`, `/projects/[slug]` | 구현됨 (콘텐츠 없음: empty state) |
+| `/blog` (`?category=`), `/blog/[slug]` | 구현됨 |
+| `/projects`, `/projects/[slug]` | 구현됨 |
 | `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF와 Email은 값이 없어 숨김/안내 상태) |
 
-헤더 네비게이션(`components/layout/nav-items.ts`)은 `/projects`, `/blog`, `/about`, `/career`, `/contact`를 가리키지만 해당 페이지가 아직 없어 현재는 404가 된다. `not-found.tsx`, `sitemap.ts`, `robots.ts`도 아직 없다.
+SEO 파일: `app/sitemap.ts`, `app/robots.ts`, `app/opengraph-image.tsx`, `blog/[slug]`·`projects/[slug]`의 `opengraph-image.tsx`, `app/not-found.tsx`, `app/(site)/error.tsx`. 페이지 metadata는 `lib/seo/metadata.ts`의 `pageMetadata()`로 title·description·canonical·Open Graph를 함께 만든다 (D-021).
 
 ## 3. 렌더링 경계
 
 - 기본은 Server Component. `"use client"`는 상호작용이 필요한 말단 컴포넌트에만 둔다.
-- 현재 Client Component는 2개뿐이다.
+- 현재 Client Component는 3개다 (`(site)/error.tsx`는 Next 요구사항).
   - `components/layout/mobile-nav.tsx` — Radix Dialog 상태 (열림/닫힘).
   - `components/layout/nav-link.tsx` — `usePathname()`으로 `aria-current` 계산.
 - 반응형은 CSS로 처리하고 viewport JS 감지는 쓰지 않는다. 헤더는 `md`(768px)에서 데스크톱 메뉴와 모바일 메뉴를 CSS(`hidden md:block` / `md:hidden`)로 전환한다.
@@ -49,7 +49,8 @@ app/(site)/   ← Server Component 기본, 정적 생성                        
 
 ```text
 app/layout.tsx            <html lang="ko">, Pretendard(next/font/local), <body> 기본 스타일, 기본 metadata
-└─ app/(site)/layout.tsx  SkipLink → SiteHeader → <main id="main-content"> → SiteFooter
+└─ app/(site)/layout.tsx  SiteShell: SkipLink → SiteHeader → <main id="main-content"> → SiteFooter
+   (app/not-found.tsx도 SiteShell을 직접 사용)
    └─ app/(site)/page.tsx Hero → SelectedWorks → About → Career → BlogPreview → Contact
 ```
 
@@ -62,7 +63,7 @@ app/layout.tsx            <html lang="ko">, Pretendard(next/font/local), <body> 
 ```text
 components/
   ui/       badge, button, external-link, markdown-content   도메인 무관 primitive
-  layout/   site-header, site-footer, mobile-nav, nav-link, skip-link, profile-links, nav-items.ts
+  layout/   site-shell, site-header, site-footer, mobile-nav, nav-link, skip-link, profile-links, nav-items.ts
   features/ blog/ (category-filter, post-list-item, table-of-contents)
             projects/ (project-grid)
             career/ (career-timeline)
@@ -103,12 +104,13 @@ Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-on
 - Vercel 프로젝트: https://vercel.com/jeontaesus-projects/portfolio-v2
 - Production: https://portfolio-v2-ashen-eight.vercel.app
 - GitHub(`Jeontaesu/portfolio_v2`) 연동 자동 배포. `main` → Production, 그 외 브랜치·PR → Preview. 이유와 trade-off는 D-018.
-- `vercel.json` 없음. 환경 변수 없음 (`NEXT_PUBLIC_SITE_URL`은 Week 3 SEO 작업 시 추가).
+- `vercel.json` 없음. 환경 변수 없음: 사이트 URL은 Vercel의 `VERCEL_PROJECT_PRODUCTION_URL`을 쓰고, 커스텀 도메인을 붙일 때만 `NEXT_PUBLIC_SITE_URL`을 설정한다. Preview는 noindex (D-021).
 
 ## 9. 변경 이력
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-14 (5)**: SEO(metadata·canonical·OG 이미지·sitemap·robots·JSON-LD), not-found, error 경계 추가. `SiteShell` 분리 (D-021).
 - **2026-10-14 (4)**: 경력기술서 기반으로 `content/profile.ts`를 채우고 About·Career·Resume·Contact 라우트, Velog·Notion 링크를 추가했다 (D-020).
 - **2026-10-14 (3)**: Markdown 파이프라인, `lib/content`, Blog·Projects 라우트 추가 (D-019).
 - **2026-10-14 (2)**: Vercel 첫 배포 완료, GitHub 자동 배포 방식을 §8에 기록했다.

@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { MarkdownContent } from "@/components/ui/markdown-content";
 import { ExternalLink } from "@/components/ui/external-link";
 import { getAdjacentProjects, getProject, getProjects } from "@/lib/content/projects";
+import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "@/lib/utils/cn";
 import { formatPeriod } from "@/lib/utils/format-date";
 
@@ -20,7 +21,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const project = await getProject(slug);
   if (!project) return {};
-  return { title: project.title, description: project.summary };
+  return pageMetadata({
+    title: project.title,
+    description: project.summary,
+    path: `/projects/${project.slug}`,
+  });
 }
 
 export default async function ProjectPage({ params }: PageProps<"/projects/[slug]">) {

@@ -1,16 +1,5 @@
-import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
-import { SkipLink } from "@/components/layout/skip-link";
+import { SiteShell } from "@/components/layout/site-shell";
 
 export default function SiteLayout({ children }: LayoutProps<"/">) {
-  return (
-    <>
-      <SkipLink />
-      <SiteHeader />
-      <main id="main-content" tabIndex={-1} className="outline-none">
-        {children}
-      </main>
-      <SiteFooter />
-    </>
-  );
+  return <SiteShell>{children}</SiteShell>;
 }

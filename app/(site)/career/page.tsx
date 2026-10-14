@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 
 import { career } from "@/content/profile";
 import { formatPeriod } from "@/lib/utils/format-date";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Career",
   description: "회사별 역할과 참여한 프로젝트의 업무·기술 정리.",
-};
+  path: "/career",
+});
 
 export default function CareerPage() {
   return (

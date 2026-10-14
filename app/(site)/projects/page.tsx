@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 
 import { ProjectGrid } from "@/components/features/projects/project-grid";
 import { getProjects } from "@/lib/content/projects";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Projects",
   description: "실무에서 해결했던 문제와 직접 만든 프로젝트의 Case Study.",
-};
+  path: "/projects",
+});
 
 export default async function ProjectsPage() {
   const projects = await getProjects();

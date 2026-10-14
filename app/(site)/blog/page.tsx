@@ -4,11 +4,13 @@ import Link from "next/link";
 import { CategoryFilter } from "@/components/features/blog/category-filter";
 import { PostListItem } from "@/components/features/blog/post-list-item";
 import { getPosts, isPostCategory } from "@/lib/content/posts";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Blog",
   description: "프론트엔드 개발과 웹 퍼블리싱을 하며 겪은 문제와 해결 과정을 기록합니다.",
-};
+  path: "/blog",
+});
 
 export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
   const { category: rawCategory } = await searchParams;

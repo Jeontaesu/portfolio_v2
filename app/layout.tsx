@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+
+import { IS_INDEXABLE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/seo/site";
+
 import "./globals.css";
 
 // Static weights used by the design tokens (400 body, 600 H3/H4, 700 Display/H1/H2).
@@ -14,8 +17,21 @@ const pretendard = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "MEFLOWEB",
-  description: "Frontend Developer & Web Publisher",
+  metadataBase: SITE_URL,
+  title: {
+    default: `${SITE_NAME} — Frontend Developer & Web Publisher`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    siteName: SITE_NAME,
+    locale: "ko_KR",
+    type: "website",
+    url: "/",
+  },
+  twitter: { card: "summary_large_image" },
+  robots: IS_INDEXABLE ? undefined : { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

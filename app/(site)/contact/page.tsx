@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 
 import { ProfileLinks } from "@/components/layout/profile-links";
+import { pageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact",
   description: "GitHub, Velog, Notion 등 연락 및 기록 채널.",
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

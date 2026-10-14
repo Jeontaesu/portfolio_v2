@@ -7,6 +7,8 @@ import { MarkdownContent } from "@/components/ui/markdown-content";
 import { categoryName } from "@/components/features/blog/post-list-item";
 import { TableOfContents } from "@/components/features/blog/table-of-contents";
 import { getPost, getPosts } from "@/lib/content/posts";
+import { jsonLd, pageMetadata } from "@/lib/seo/metadata";
+import { SITE_NAME, SITE_URL } from "@/lib/seo/site";
 import { formatDate } from "@/lib/utils/format-date";
 
 export async function generateStaticParams() {
@@ -17,7 +19,13 @@ export async function generateMetadata({ params }: PageProps<"/blog/[slug]">): P
   const { slug } = await params;
   const post = await getPost(slug);
   if (!post) return {};
-  return { title: post.title, description: post.excerpt };
+  return pageMetadata({
+    title: post.title,
+    description: post.excerpt,
+    path: `/blog/${post.slug}`,
+    type: "article",
+    publishedTime: post.publishedAt,
+  });
 }
 
 export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">) {
@@ -25,8 +33,22 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
   const post = await getPost(slug);
   if (!post) notFound();
 
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.publishedAt,
+    url: new URL(`/blog/${post.slug}`, SITE_URL).toString(),
+    author: { "@type": "Person", name: SITE_NAME },
+  };
+
   return (
     <article className="container-page py-20 lg:py-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }}
+      />
       <Link
         href="/blog"
         className="inline-flex min-h-11 items-center gap-1 text-body-sm text-secondary hover:text-foreground"
