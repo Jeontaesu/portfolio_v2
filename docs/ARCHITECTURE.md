@@ -10,25 +10,29 @@
 ```text
 content/*.md, content/*.ts
         │  (빌드 시 읽기)
-lib/content/  ← 페이지는 이 함수로만 콘텐츠를 읽는다 (server-only)      [설계만 있음]
+lib/content/  ← 페이지는 이 함수로만 콘텐츠를 읽는다 (server-only)      [posts·projects 구현됨]
         │
-lib/markdown/ ← Markdown → sanitize된 HTML, 목차 추출                    [설계만 있음]
+lib/markdown/ ← Markdown → sanitize된 HTML, 목차 추출                    [구현됨]
         │
-app/(site)/   ← Server Component 기본, 정적 생성                         [Home만 구현]
+app/(site)/   ← Server Component 기본, 정적 생성                         [Home, Blog, Projects 구현]
 ```
 
 - 콘텐츠 필드 이름은 `CLAUDE.md §7`의 모델과 동일하게 쓴다.
 - `status: DRAFT`는 빌드에서 제외한다.
 - 이후 단계에서 DB로 옮길 때는 `lib/content/` 내부만 바꾸고 페이지 코드는 유지한다.
 
-**현재 실제 상태**: `lib/content/`, `lib/markdown/`, `lib/seo/`, `content/posts/`, `content/projects/`는 `.gitkeep`만 있는 빈 폴더다. 지금 데이터를 읽는 곳은 `content/profile.ts` 하나이고, 컴포넌트가 `lib/content/`를 거치지 않고 직접 import한다 (`SiteHeader`, `MobileNav`, `Contact` 등). 콘텐츠 종류가 늘어나는 Week 2에 `lib/content/` 함수로 감싼다.
+**현재 실제 상태**: `lib/content/`는 `posts.ts`, `projects.ts`, `types.ts`가 있고, `lib/markdown/`은 `render.ts`(파이프라인)와 `toc.ts`가 있다. `lib/seo/`는 비어 있다. `content/posts/`, `content/projects/`에는 아직 실제 글이 없고 `content/projects.ts`는 빈 배열이다. About/Career/Contact/Footer는 아직 `content/profile.ts`를 직접 import한다.
+
+파이프라인 순서와 이유는 D-019. `status: DRAFT`는 `lib/content`에서 걸러져 어떤 페이지에도 노출되지 않는다.
 
 ## 2. 라우트 구현 현황
 
 | 라우트 | 상태 |
 |---|---|
-| `/` | 구현됨 (섹션 골격, 임시 데이터) |
-| `/about`, `/career`, `/projects`, `/projects/[slug]`, `/blog`, `/blog/[slug]`, `/resume`, `/contact` | 미구현 |
+| `/` | 구현됨 (Selected Works·Blog Preview는 실제 데이터 연결, About·Career는 골격) |
+| `/blog` (`?category=`), `/blog/[slug]` | 구현됨 (콘텐츠 없음: empty state) |
+| `/projects`, `/projects/[slug]` | 구현됨 (콘텐츠 없음: empty state) |
+| `/about`, `/career`, `/resume`, `/contact` | 미구현 |
 
 헤더 네비게이션(`components/layout/nav-items.ts`)은 `/projects`, `/blog`, `/about`, `/career`, `/contact`를 가리키지만 해당 페이지가 아직 없어 현재는 404가 된다. `not-found.tsx`, `sitemap.ts`, `robots.ts`도 아직 없다.
 
@@ -57,9 +61,10 @@ app/layout.tsx            <html lang="ko">, Pretendard(next/font/local), <body> 
 
 ```text
 components/
-  ui/       badge, button, external-link        도메인 무관 primitive
+  ui/       badge, button, external-link, markdown-content   도메인 무관 primitive
   layout/   site-header, site-footer, mobile-nav, nav-link, skip-link, nav-items.ts
-  features/ blog/, projects/                    비어 있음 (Week 2에 채움)
+  features/ blog/ (category-filter, post-list-item, table-of-contents)
+            projects/ (project-grid)
 ```
 
 - **Button, Badge**: CVA로 variant × size를 정의한다. CVA는 이 두 곳에만 쓴다 (D-016).
@@ -90,7 +95,7 @@ components/
 | 런타임 | Node >=24, pnpm 12.11.2 (`packageManager`) |
 | 설치된 UI 의존성 | `@radix-ui/react-dialog`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, `clsx`, `tailwind-merge` |
 
-아직 설치하지 않은 것: Markdown 파이프라인(`gray-matter`, `unified` 계열, `shiki`)은 Week 2 `lib/markdown/` 작업 시 설치한다. DB·인증 관련 패키지는 Phase 2 전까지 설치하지 않는다.
+Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-only`)은 정확한 버전으로 고정해 설치했다. DB·인증 관련 패키지는 Phase 2 전까지 설치하지 않는다.
 
 ## 8. 배포
 
@@ -103,5 +108,6 @@ components/
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-14 (3)**: Markdown 파이프라인, `lib/content`, Blog·Projects 라우트 추가 (D-019).
 - **2026-10-14 (2)**: Vercel 첫 배포 완료, GitHub 자동 배포 방식을 §8에 기록했다.
 - **2026-10-14**: "코드 없음" 상태의 설계 문서를 실제 구현 기준으로 갱신. Home 골격, 공통 레이아웃(SkipLink / Header / MobileNav / Footer), 토큰, UI primitive 3종이 구현되어 있음을 반영하고, 미구현 영역(`lib/*`, 하위 라우트, SEO 파일)을 명시했다.

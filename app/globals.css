@@ -139,3 +139,93 @@
     }
   }
 }
+
+/*
+ * Rendered Markdown (blog posts, Case Studies). The HTML is sanitized in lib/markdown/render.ts,
+ * so these rules style element selectors instead of requiring classes on generated markup.
+ */
+@layer components {
+  .prose {
+    max-width: 720px;
+    font-size: var(--fs-body-lg);
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+  }
+  .prose > * + * {
+    margin-top: 1.25em;
+  }
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    scroll-margin-top: 6rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .prose h2 {
+    margin-top: 2.5em;
+    font-size: var(--fs-h3);
+  }
+  .prose h3 {
+    margin-top: 2em;
+    font-size: var(--fs-h4);
+  }
+  .prose a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 1.5em;
+  }
+  .prose ul {
+    list-style: disc;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose li + li {
+    margin-top: 0.4em;
+  }
+  .prose blockquote {
+    border-left: 3px solid var(--border);
+    padding-left: 1em;
+    color: var(--secondary);
+  }
+  .prose hr {
+    border-color: var(--border);
+  }
+  .prose img {
+    max-width: 100%;
+    height: auto;
+  }
+  .prose :not(pre) > code {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    padding: 0.1em 0.4em;
+    font-size: 0.9em;
+  }
+  .prose pre {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    font-size: var(--fs-body-sm);
+    line-height: 1.7;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    font-size: var(--fs-body-sm);
+  }
+  .prose th,
+  .prose td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+}

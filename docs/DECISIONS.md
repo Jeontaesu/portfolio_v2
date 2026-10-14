@@ -134,3 +134,13 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **trade-off**: Preview도 공개 URL이라 `noindex` 처리 여부를 SEO 작업 때 정해야 한다. 지금은 콘텐츠가 임시 데이터여서 검색 노출 위험이 있다.
 - **미확인**: Vercel 프로젝트의 Node 버전 설정, Production Branch가 `main`인지는 대시보드에서 확인하지 못했다.
 - **날짜**: 2026-10-14
+
+## D-019. Markdown 파이프라인 순서와 Blog 필터 렌더링
+
+- **파이프라인 순서**: `remark-parse → remark-gfm → remark-rehype(raw HTML 미허용) → rehype-sanitize → rehype-slug → 목차 수집 → shiki → stringify`. `CLAUDE.md §2`의 순서(slug → sanitize)와 다르다.
+- **이유**: sanitize 기본 스키마는 `id`에 `user-content-` 접두사를 붙여, slug를 먼저 붙이면 목차 앵커(`#제목`)와 실제 id가 어긋난다. slug를 sanitize 뒤에 두면 이미 정제된 텍스트로 id가 만들어진다. shiki도 sanitize 뒤에 두면 shiki가 만드는 `class`/`style`/`tabindex`를 허용 목록에 추가하지 않아도 된다. shiki의 입력은 sanitize된 AST이고 출력은 shiki가 직접 이스케이프해 생성한다.
+- **검증**: 임시 글로 빌드해 `<script>`와 `onerror`가 출력에 없고, `pre`에 `tabindex="0"`·`role="region"`·`aria-label`이 붙고, 목차 링크가 본문 heading id와 일치함을 확인했다.
+- **추가 의존성**: `vfile`(`file.data.toc` 타입 확장), `@types/hast`(타입 전용), `server-only`.
+- **Blog 카테고리 필터**: 디자인 문서대로 `?category=` search param을 쓴다. `searchParams`를 읽는 `/blog`는 요청 시 렌더링(ƒ)이 된다. 정적 생성을 유지하려면 `/blog/category/[slug]` 경로로 바꿔야 한다. 글이 수십 개 이하라 요청 시 렌더링 비용은 무시할 수 있어 URL 설계를 우선했다.
+- **trade-off**: `/blog`는 CDN 정적 캐시가 아니다. 대신 필터 링크는 JS 없이 동작하고 공유 가능하다.
+- **날짜**: 2026-10-14
