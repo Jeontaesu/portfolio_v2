@@ -55,12 +55,12 @@
 | State | Server data → URL search params → `useState`/`useReducer` → Server Actions → TanStack Query(필요 시) → Zustand(필요 시) |
 | Server | Server Components (Phase 1), Server Actions·Route Handlers (Phase 2). 별도 Node 서버 없음 |
 | Content (Phase 1) | `content/`의 TS 데이터 + Markdown 파일(frontmatter). 빌드 시 정적 생성 |
-| Markdown | `gray-matter`(frontmatter) + `unified` 파이프라인(`remark-parse` → `remark-gfm` → `remark-rehype` → `rehype-slug` → `rehype-sanitize` → `rehype-stringify`) + `shiki` 4.5.0(`@shikijs/rehype`, 빌드 시 정적 하이라이트). 목차는 heading AST에서 `lib/markdown/`의 자체 함수로 추출. sanitize 허용 목록은 shiki 출력(class, style)과 코드 블록 `tabindex`가 잘리지 않게 맞춘다. 패키지 버전은 설치 시점에 확인해 고정 |
-| DB / Auth (Phase 2) | PostgreSQL, Prisma, Auth.js |
-| Validation (Phase 2) | `[TBD]` 권장: Zod (폼·Server Action 공용 스키마) |
+| Markdown | `gray-matter`(frontmatter) + `unified` 파이프라인(`remark-parse` → `remark-gfm` → `remark-rehype` → `rehype-sanitize` → `rehype-slug` → 목차 수집 → `@shikijs/rehype` → `rehype-stringify`). sanitize를 slug·shiki보다 먼저 둔다 (D-019). 목차 id가 최종 HTML에 없으면 빌드 실패. 패키지 버전은 설치 시점에 확인해 고정 |
+| DB / Auth (Phase 2) | PostgreSQL(Neon, Vercel Marketplace 연동), Prisma, Auth.js + GitHub OAuth (허용 목록 계정만 ADMIN, 비밀번호 저장 안 함). D-023 |
+| Validation (Phase 2) | Zod (폼·Server Action 공용 스키마). D-023 |
 | 이미지 저장 | P0: URL 또는 `public/` 정적 경로. 업로드(P1)는 외부 스토리지 필요 (Vercel 파일시스템은 영구 저장 안 됨) |
 | Font | Pretendard, `next/font/local` |
-| Deploy | Vercel (GitHub 연동 자동 배포, D-018) + PostgreSQL 호스팅 `[TBD]` (Phase 2) |
+| Deploy | Vercel (GitHub 연동 자동 배포, D-018) + Neon PostgreSQL (Phase 2, D-023) |
 | Tooling | ESLint, Prettier, Git/GitHub. Storybook은 MVP 이후 판단 |
 
 **버전 (2026-10-13 npm registry / nodejs.org 확인, 근거는 `docs/DECISIONS.md`)**
@@ -221,7 +221,7 @@ Comment   (P1) id, postId → Post, author, content, createdAt
 ```
 
 - slug: 영문 소문자 kebab-case, unique. 공개 URL에 사용.
-- Category 삭제 시 게시글은 `categoryId = null` (SetNull). `[TBD]` 확정 필요.
+- Category 삭제 시 게시글은 `categoryId = null` (SetNull, 미분류로 남김). D-023
 - 공개 페이지는 `status = PUBLISHED`만 조회. 정렬: Post `publishedAt desc`, Project `sortOrder asc`.
 - Home Selected Works = `featured = true` 프로젝트.
 - About / Career / Resume 콘텐츠 출처: P0는 `content/profile.ts`의 정적 데이터 (§5 구조와 동일), CMS화는 이후. 값이 없는 항목(링크 등)은 렌더링하지 않는다.

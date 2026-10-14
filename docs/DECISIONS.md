@@ -174,3 +174,12 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **재발 방지**: 빌드가 저장소 밖 파일을 읽도록 바꿨을 때는 커밋된 파일만 있는 새 clone에서 `pnpm install --frozen-lockfile && pnpm build`로 확인한 뒤 push한다. 이번 수정도 이 방법으로 확인했다.
 - **결과**: 배포 `3h8k62cfv` Ready. 실제 도메인에서 모든 공개 페이지 200, 없는 경로 404(사이트 레이아웃 포함), robots·sitemap(12개 URL)·canonical·OG 이미지가 프로덕션 도메인으로 나오는 것을 확인했다.
 - **날짜**: 2026-10-14
+
+## D-023. Phase 2 기반 결정: Neon, GitHub OAuth, Zod, Category SetNull
+
+- **DB 호스팅: Neon** — Vercel Marketplace로 연결하면 `DATABASE_URL` 등이 Vercel 환경 변수로 자동 주입된다. 서버리스 Postgres라 트래픽이 적은 포트폴리오에 맞고 무료 티어가 있다. Preview 배포마다 DB branch를 나눌 수 있다. 대안이었던 Supabase는 Storage가 장점이지만 Auth가 Auth.js와 겹치고, Prisma Postgres는 설정이 가장 단순하지만 Prisma 밖의 도구 경험이 적다.
+- **인증: Auth.js + GitHub OAuth** — 허용 목록에 있는 계정만 `ADMIN`으로 만든다. 비밀번호를 저장하지 않아 해싱·로그인 시도 제한을 직접 구현할 필요가 없다. trade-off: GitHub 계정이 없는 사람은 로그인할 수 없다 (이 사이트는 관리자 1명이라 문제없음). 권한 확인은 버튼 숨김이 아니라 Admin 페이지·모든 Server Action·Route Handler에서 각각 한다 (`CLAUDE.md §1`).
+- **Validation: Zod** — 폼과 Server Action이 같은 스키마를 쓰고 타입을 스키마에서 만든다.
+- **Category 삭제: SetNull** — 글은 남기고 미분류로 둔다. 글이 사라지는 일이 없다.
+- **버전**: Prisma, Auth.js, Zod 버전은 설치 시점에 registry에서 확인해 고정하고 이 항목에 기록한다.
+- **날짜**: 2026-10-14
