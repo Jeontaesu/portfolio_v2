@@ -21,7 +21,7 @@ app/(site)/   ← Server Component 기본, 정적 생성                        
 - `status: DRAFT`는 빌드에서 제외한다.
 - 이후 단계에서 DB로 옮길 때는 `lib/content/` 내부만 바꾸고 페이지 코드는 유지한다.
 
-**현재 실제 상태**: `lib/content/`는 `posts.ts`, `projects.ts`, `types.ts`가 있고, `lib/markdown/`은 `render.ts`(파이프라인)와 `toc.ts`가 있다. `lib/seo/`는 비어 있다. `content/posts/`, `content/projects/`에는 아직 실제 글이 없고 `content/projects.ts`는 빈 배열이다. About/Career/Contact/Footer는 아직 `content/profile.ts`를 직접 import한다.
+**현재 실제 상태**: `lib/content/`는 `posts.ts`, `projects.ts`, `types.ts`가 있고, `lib/markdown/`은 `render.ts`(파이프라인)와 `toc.ts`가 있다. `lib/seo/`는 비어 있다. `content/posts/`, `content/projects/`에는 아직 실제 글이 없고 `content/projects.ts`는 빈 배열이다. About/Career/Resume/Contact/Footer는 `content/profile.ts`를 직접 import한다 (경력은 `career`, 링크·기술은 `profile`). 콘텐츠가 이 한 파일이라 `lib/content/`로 감싸는 것은 CMS화 시점으로 미룬다.
 
 파이프라인 순서와 이유는 D-019. `status: DRAFT`는 `lib/content`에서 걸러져 어떤 페이지에도 노출되지 않는다.
 
@@ -32,7 +32,7 @@ app/(site)/   ← Server Component 기본, 정적 생성                        
 | `/` | 구현됨 (Selected Works·Blog Preview는 실제 데이터 연결, About·Career는 골격) |
 | `/blog` (`?category=`), `/blog/[slug]` | 구현됨 (콘텐츠 없음: empty state) |
 | `/projects`, `/projects/[slug]` | 구현됨 (콘텐츠 없음: empty state) |
-| `/about`, `/career`, `/resume`, `/contact` | 미구현 |
+| `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF와 Email은 값이 없어 숨김/안내 상태) |
 
 헤더 네비게이션(`components/layout/nav-items.ts`)은 `/projects`, `/blog`, `/about`, `/career`, `/contact`를 가리키지만 해당 페이지가 아직 없어 현재는 404가 된다. `not-found.tsx`, `sitemap.ts`, `robots.ts`도 아직 없다.
 
@@ -62,9 +62,10 @@ app/layout.tsx            <html lang="ko">, Pretendard(next/font/local), <body> 
 ```text
 components/
   ui/       badge, button, external-link, markdown-content   도메인 무관 primitive
-  layout/   site-header, site-footer, mobile-nav, nav-link, skip-link, nav-items.ts
+  layout/   site-header, site-footer, mobile-nav, nav-link, skip-link, profile-links, nav-items.ts
   features/ blog/ (category-filter, post-list-item, table-of-contents)
             projects/ (project-grid)
+            career/ (career-timeline)
 ```
 
 - **Button, Badge**: CVA로 variant × size를 정의한다. CVA는 이 두 곳에만 쓴다 (D-016).
@@ -108,6 +109,7 @@ Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-on
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-14 (4)**: 경력기술서 기반으로 `content/profile.ts`를 채우고 About·Career·Resume·Contact 라우트, Velog·Notion 링크를 추가했다 (D-020).
 - **2026-10-14 (3)**: Markdown 파이프라인, `lib/content`, Blog·Projects 라우트 추가 (D-019).
 - **2026-10-14 (2)**: Vercel 첫 배포 완료, GitHub 자동 배포 방식을 §8에 기록했다.
 - **2026-10-14**: "코드 없음" 상태의 설계 문서를 실제 구현 기준으로 갱신. Home 골격, 공통 레이아웃(SkipLink / Header / MobileNav / Footer), 토큰, UI primitive 3종이 구현되어 있음을 반영하고, 미구현 영역(`lib/*`, 하위 라우트, SEO 파일)을 명시했다.

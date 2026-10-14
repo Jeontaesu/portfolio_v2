@@ -1,4 +1,10 @@
+import Link from "next/link";
+
+import { profile } from "@/content/profile";
+
 import { SectionHeader } from "./section-header";
+
+const working = profile.skills.working.flatMap((group) => group.items);
 
 export function About() {
   return (
@@ -13,7 +19,7 @@ export function About() {
           <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
             Web Publisher
           </p>
-          <p className="mt-2 text-body">실무 경력</p>
+          <p className="mt-2 text-body">실무 경력 {profile.careerYears}년</p>
         </div>
         <div>
           <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
@@ -25,13 +31,19 @@ export function About() {
       <dl className="mt-8 grid gap-6 border-t border-border pt-8 lg:grid-cols-2">
         <div>
           <dt className="text-body-sm font-semibold text-secondary">실무 사용</dt>
-          <dd className="mt-1 text-body">HTML · CSS/SCSS · JavaScript · jQuery</dd>
+          <dd className="mt-1 text-body">{working.join(" · ")}</dd>
         </div>
         <div>
           <dt className="text-body-sm font-semibold text-secondary">학습·적용 중</dt>
-          <dd className="mt-1 text-body">React · TypeScript · Next.js · Tailwind CSS</dd>
+          <dd className="mt-1 text-body">{profile.skills.learning.join(" · ")}</dd>
         </div>
       </dl>
+      <Link
+        href="/about"
+        className="mt-8 inline-flex min-h-11 items-center text-primary underline underline-offset-4"
+      >
+        About 더 보기
+      </Link>
     </section>
   );
 }
