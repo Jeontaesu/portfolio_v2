@@ -21,8 +21,8 @@ export type RenderedMarkdown = {
  * Order matters:
  * 1. remark-rehype without raw HTML: raw HTML in markdown is dropped, not passed through.
  * 2. rehype-sanitize (default GitHub schema) runs first, on content that can contain anything.
- * 3. rehype-slug runs after sanitize. Sanitize prefixes ids with "user-content-", which would
- *    break TOC anchors, so ids are assigned afterwards from the already-clean heading text.
+ * 3. rehype-slug runs after sanitize. Sanitize prefixes ids with "user-content-" (URLs would read
+ *    #user-content-제목, and a TOC collected before sanitize would break), so ids are assigned afterwards.
  * 4. shiki runs last. Its input is the sanitized AST and it only emits its own class/style/tabindex,
  *    so the sanitize allowlist does not need to be widened.
  */
@@ -52,5 +52,17 @@ const processor = unified()
 
 export async function renderMarkdown(source: string): Promise<RenderedMarkdown> {
   const file = await processor.process(source);
-  return { html: String(file), toc: file.data.toc ?? [] };
+  const html = String(file);
+  const toc = file.data.toc ?? [];
+
+  // Guard against plugin-order regressions: every TOC link must point at an id that is in the final HTML.
+  // (If the TOC were collected before rehype-sanitize, ids would become "user-content-…" and links would break silently.)
+  const missing = toc.filter((item) => !html.includes(`id="${item.id}"`));
+  if (missing.length > 0) {
+    throw new Error(
+      `[markdown] TOC ids missing from output HTML: ${missing.map((m) => m.id).join(", ")}`,
+    );
+  }
+
+  return { html, toc };
 }

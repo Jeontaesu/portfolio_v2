@@ -139,6 +139,8 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 
 - **파이프라인 순서**: `remark-parse → remark-gfm → remark-rehype(raw HTML 미허용) → rehype-sanitize → rehype-slug → 목차 수집 → shiki → stringify`. `CLAUDE.md §2`의 순서(slug → sanitize)와 다르다.
 - **이유**: sanitize 기본 스키마는 `id`에 `user-content-` 접두사를 붙여, slug를 먼저 붙이면 목차 앵커(`#제목`)와 실제 id가 어긋난다. slug를 sanitize 뒤에 두면 이미 정제된 텍스트로 id가 만들어진다. shiki도 sanitize 뒤에 두면 shiki가 만드는 `class`/`style`/`tabindex`를 허용 목록에 추가하지 않아도 된다. shiki의 입력은 sanitize된 AST이고 출력은 shiki가 직접 이스케이프해 생성한다.
+- **재현 (2026-10-14)**: 순서를 바꿔 빌드해 확인했다. (a) slug → sanitize → 목차: heading id와 목차 링크가 모두 `user-content-문제`로 일치하지만 URL이 `#user-content-문제`가 된다. (b) slug → 목차 → sanitize: id는 `user-content-…`, 링크는 `#문제`라 6개 중 6개가 깨진다.
+- **재발 방지**: `renderMarkdown`이 목차의 모든 id가 최종 HTML에 `id="…"`로 있는지 확인하고, 없으면 빌드를 실패시킨다. 잘못된 순서(b)에서 빌드가 실제로 실패함을 확인했다.
 - **검증**: 임시 글로 빌드해 `<script>`와 `onerror`가 출력에 없고, `pre`에 `tabindex="0"`·`role="region"`·`aria-label`이 붙고, 목차 링크가 본문 heading id와 일치함을 확인했다.
 - **추가 의존성**: `vfile`(`file.data.toc` 타입 확장), `@types/hast`(타입 전용), `server-only`.
 - **Blog 카테고리 필터**: 디자인 문서대로 `?category=` search param을 쓴다. `searchParams`를 읽는 `/blog`는 요청 시 렌더링(ƒ)이 된다. 정적 생성을 유지하려면 `/blog/category/[slug]` 경로로 바꿔야 한다. 글이 수십 개 이하라 요청 시 렌더링 비용은 무시할 수 있어 URL 설계를 우선했다.
