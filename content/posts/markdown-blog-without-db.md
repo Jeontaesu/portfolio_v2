@@ -4,7 +4,7 @@ slug: markdown-blog-without-db
 category: frontend
 excerpt: DB 없이 Markdown 파일로 블로그를 만들며 sanitize와 heading id, 목차 수집 순서에 따라 목차 링크가 깨지는 것을 재현하고, 빌드 시점 검증으로 막은 과정을 정리합니다.
 publishedAt: 2026-10-14
-status: DRAFT
+status: PUBLISHED
 ---
 
 ## 문제

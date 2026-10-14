@@ -4,7 +4,7 @@ slug: color-contrast-status-badge
 category: css
 excerpt: 상태색 10% 배경 위에 같은 계열 텍스트를 올린 Badge가 WCAG 대비 기준을 통과하지 못했습니다. 배경을 흰 surface로 바꾸고 점으로 상태를 보강한 과정을 정리합니다.
 publishedAt: 2026-10-14
-status: DRAFT
+status: PUBLISHED
 ---
 
 ## 문제
