@@ -79,19 +79,21 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         </div>
       )}
 
-      <dl className="mt-12 grid grid-cols-1 gap-6 border-y border-border py-8 md:grid-cols-3">
+      <dl className="mt-12 grid grid-cols-1 gap-6 border-y border-border py-8 md:grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
         <div>
           <dt className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
             Role
           </dt>
           <dd className="mt-2 text-body">{project.role}</dd>
         </div>
-        <div>
-          <dt className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
-            Period
-          </dt>
-          <dd className="mt-2 text-body">{formatPeriod(project.startedAt, project.endedAt)}</dd>
-        </div>
+        {project.startedAt && (
+          <div>
+            <dt className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
+              Period
+            </dt>
+            <dd className="mt-2 text-body">{formatPeriod(project.startedAt, project.endedAt)}</dd>
+          </div>
+        )}
         <div>
           <dt className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
             Technology

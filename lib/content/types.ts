@@ -37,8 +37,8 @@ export type ProjectMeta = {
   thumbnailAlt?: string;
   techStack: readonly string[];
   role: string;
-  /** YYYY-MM */
-  startedAt: string;
+  /** YYYY-MM. Omitted when the source has no project-level period. */
+  startedAt?: string;
   endedAt?: string;
   githubUrl?: string;
   demoUrl?: string;

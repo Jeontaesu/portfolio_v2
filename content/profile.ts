@@ -33,14 +33,14 @@ export const profile = {
     github: "https://github.com/Jeontaesu",
     velog: "https://velog.io/@meflow/posts",
     notion:
-      "https://app.notion.com/p/dc7b50a46631412b9a9d6fee9876b2f2?v=eebf0f2a2bc843ba902865cfcbf7d447&source=copy_link",
+      "https://amusing-bugle-9be.notion.site/dc7b50a46631412b9a9d6fee9876b2f2?v=eebf0f2a2bc843ba902865cfcbf7d447",
     // [TBD] Contact email — to be provided by the owner.
     email: undefined as string | undefined,
   },
   /** Total career as of 2026-10 (11 years 1 month). */
   careerYears: 11,
   /** Path under public/ once the PDF exists, e.g. "/resume.pdf". Undefined hides the download link. */
-  resumePdf: undefined as string | undefined,
+  resumePdf: "/resume_20261014.pdf" as string | undefined,
   skills: {
     working: [
       {
@@ -49,7 +49,7 @@ export const profile = {
       },
       {
         label: "스크립트 · 프레임워크",
-        items: ["JavaScript", "Vue.js", "React (협업 퍼블리싱)", "GSAP", "WebSquare"],
+        items: ["JavaScript", "jQuery", "Vue.js", "React (협업 퍼블리싱)", "GSAP", "WebSquare"],
       },
       { label: "도구 · 협업", items: ["Gulp", "GitHub", "GitLab", "SVN"] },
       { label: "품질", items: ["웹 접근성 (WCAG 2.1)", "웹표준"] },
@@ -202,7 +202,7 @@ export const career: readonly CareerEntry[] = [
       {
         name: "광주은행 웹/앱 구축 및 웹 접근성 프로젝트",
         period: "2023.12 — 2024.02",
-        tech: ["HTML5", "CSS3", "JavaScript", "웹 접근성 (WCAG 2.1)"],
+        tech: ["HTML5", "CSS3", "JavaScript", "jQuery", "웹 접근성 (WCAG 2.1)"],
         work: [
           "웹 접근성 기준 적용 (대체 텍스트, 키보드 네비게이션, 명도 대비 등)",
           "모바일 웹/앱 리뉴얼 퍼블리싱",
@@ -212,7 +212,7 @@ export const career: readonly CareerEntry[] = [
       {
         name: "전북은행 운영 및 유지보수",
         period: "2023.09 — 2023.12",
-        tech: ["HTML5", "CSS3", "JavaScript"],
+        tech: ["HTML5", "CSS3", "JavaScript", "jQuery"],
         work: ["금융기관 웹/앱 유지보수 및 기능 개선", "긴급 요청 이슈 대응"],
         result: ["안정성 유지로 계약 연장"],
       },
