@@ -2,15 +2,20 @@ import type { ProjectMeta } from "@/lib/content/types";
 
 // Case Study metadata. The body lives in content/projects/<slug>.md.
 // Add an entry only for a project that has a real, publishable write-up (CLAUDE.md §9).
-// Source: the owner's career statement. `startedAt` is omitted until the project-level period is confirmed.
+// Source: the owner's career statement. Periods come from the owner.
 export const projects: readonly ProjectMeta[] = [
   {
     title: "범농협 운영지원센터 · 포털사이트 구축 / 이관",
     slug: "nonghyup-portal",
+    thumbnail: "/images/projects/logo_nh.png",
+    thumbnailAlt: "농협 로고",
+    thumbnailFit: "contain",
     summary:
       "농협 최초 포털사이트 구축과 운영지원센터 2.0 리뉴얼에서 반응형 UI와 모션 인터랙션, CMS 관리자 화면을 퍼블리싱했습니다.",
     techStack: ["Pug", "HTML", "SCSS", "GSAP", "GitHub", "Wizard", "반응형"],
     role: "웹 퍼블리셔 (프레임아웃)",
+    startedAt: "2026-03",
+    endedAt: "2026-10",
     featured: true,
     sortOrder: 1,
     status: "PUBLISHED",
@@ -18,10 +23,15 @@ export const projects: readonly ProjectMeta[] = [
   {
     title: "드시모네몰 쇼핑몰 리뉴얼",
     slug: "dsimone-mall",
+    thumbnail: "/images/projects/logo_desimone.png",
+    thumbnailAlt: "드시모네 로고",
+    thumbnailFit: "contain",
     summary:
       "레거시 소스를 분석해 Vue 기반 신규 구조로 옮기고, 컴포넌트화로 오픈 이후 운영 효율을 높였습니다.",
     techStack: ["Vue", "SCSS", "GitLab", "적응형"],
     role: "웹 퍼블리셔 (프레임아웃)",
+    startedAt: "2025-12",
+    endedAt: "2026-03",
     featured: true,
     sortOrder: 2,
     status: "PUBLISHED",
@@ -29,10 +39,15 @@ export const projects: readonly ProjectMeta[] = [
   {
     title: "우리카드 통합단말 시스템 구축",
     slug: "woori-card-terminal",
+    thumbnail: "/images/projects/logo_woori.png",
+    thumbnailAlt: "우리금융그룹 로고",
+    thumbnailFit: "contain",
     summary:
       "WebSquare 플랫폼 위에서 통합 단말 시스템 화면을 타이트한 일정에 맞춰 퍼블리싱했습니다.",
     techStack: ["WebSquare", "SVN"],
     role: "웹 퍼블리셔 (프레임아웃)",
+    startedAt: "2025-07",
+    endedAt: "2025-12",
     featured: true,
     sortOrder: 3,
     status: "PUBLISHED",

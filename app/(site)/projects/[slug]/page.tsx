@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { MarkdownContent } from "@/components/ui/markdown-content";
 import { ExternalLink } from "@/components/ui/external-link";
 import { getAdjacentProjects, getProject, getProjects } from "@/lib/content/projects";
+import { cn } from "@/lib/utils/cn";
 import { formatPeriod } from "@/lib/utils/format-date";
 
 export async function generateStaticParams() {
@@ -74,7 +75,9 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
             fill
             priority
             sizes="(min-width: 1280px) 1200px, 100vw"
-            className="object-cover"
+            className={cn(
+              project.thumbnailFit === "contain" ? "object-contain p-10" : "object-cover",
+            )}
           />
         </div>
       )}

@@ -35,6 +35,8 @@ export type ProjectMeta = {
   thumbnail?: string;
   /** Required with thumbnail: describes the image for screen readers. */
   thumbnailAlt?: string;
+  /** "contain" for logos and diagrams that must not be cropped. Default "cover". */
+  thumbnailFit?: "cover" | "contain";
   techStack: readonly string[];
   role: string;
   /** YYYY-MM. Omitted when the source has no project-level period. */
