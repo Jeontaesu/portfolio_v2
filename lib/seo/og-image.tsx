@@ -10,12 +10,13 @@ import { SITE_NAME } from "./site";
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
 
-// Satori (next/og) cannot read woff2, so the TTF files are used. Rendered at build time only.
+// Satori (next/og) reads TTF/OTF/WOFF but not woff2. WOFF is used (about half the TTF size).
+// These files must be tracked in git (see .gitignore whitelist) — Vercel builds from the repo.
 async function loadFonts() {
   const dir = path.join(process.cwd(), "public", "fonts");
   const [regular, bold] = await Promise.all([
-    fs.readFile(path.join(dir, "Pretendard-Regular.ttf")),
-    fs.readFile(path.join(dir, "Pretendard-Bold.ttf")),
+    fs.readFile(path.join(dir, "Pretendard-Regular.woff")),
+    fs.readFile(path.join(dir, "Pretendard-Bold.woff")),
   ]);
   return [
     { name: "Pretendard", data: regular, weight: 400 as const, style: "normal" as const },

@@ -44,8 +44,11 @@ next-env.d.ts
 # local Claude Code settings
 /.claude/settings.local.json
 
-# Pretendard: only the woff2 weights loaded in app/layout.tsx are tracked
+# Pretendard: only the files the build reads are tracked.
+# woff2 → app/layout.tsx (next/font). woff → lib/seo/og-image.tsx (Satori cannot read woff2).
 public/fonts/*
 !public/fonts/Pretendard-Regular.woff2
 !public/fonts/Pretendard-SemiBold.woff2
 !public/fonts/Pretendard-Bold.woff2
+!public/fonts/Pretendard-Regular.woff
+!public/fonts/Pretendard-Bold.woff
