@@ -166,3 +166,11 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **JSON-LD**: 블로그 글에만 `BlogPosting`을 넣었다. `author.name`은 실명이 정해지지 않아 브랜드명(MEFLOWEB)을 쓴다. `Person`은 공개할 이름이 정해지면 추가한다.
 - **not-found**: `app/not-found.tsx`는 `(site)` 그룹 밖이라 레이아웃을 받지 못한다. 그래서 `SiteShell`(SkipLink·Header·main·Footer)을 컴포넌트로 분리해 `(site)/layout.tsx`와 함께 쓴다.
 - **날짜**: 2026-10-14
+
+## D-022. 배포 실패: git에 없는 파일에 의존한 빌드
+
+- **문제**: OG 이미지가 `public/fonts/Pretendard-*.ttf`를 읽었는데, `.gitignore`가 woff2만 커밋하도록 되어 있었다. 로컬에는 파일이 있어 빌드가 통과했고, Vercel에서는 `ENOENT`로 실패했다 (배포 `77s8puw4c`).
+- **해결**: Satori가 읽을 수 있는 WOFF(Regular·Bold, 약 1.1MB씩, TTF의 절반 이하)로 바꾸고 `.gitignore` 허용 목록에 추가했다.
+- **재발 방지**: 빌드가 저장소 밖 파일을 읽도록 바꿨을 때는 커밋된 파일만 있는 새 clone에서 `pnpm install --frozen-lockfile && pnpm build`로 확인한 뒤 push한다. 이번 수정도 이 방법으로 확인했다.
+- **결과**: 배포 `3h8k62cfv` Ready. 실제 도메인에서 모든 공개 페이지 200, 없는 경로 404(사이트 레이아웃 포함), robots·sitemap(12개 URL)·canonical·OG 이미지가 프로덕션 도메인으로 나오는 것을 확인했다.
+- **날짜**: 2026-10-14
