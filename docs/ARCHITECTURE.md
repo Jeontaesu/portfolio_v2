@@ -29,7 +29,7 @@ app/(site)/   ← Server Component 기본, 정적 생성                        
 
 | 라우트 | 상태 |
 |---|---|
-| `/` | 구현됨 (Selected Works·Blog Preview는 실제 데이터 연결, About·Career는 골격) |
+| `/` | 구현됨 (모든 섹션이 실제 데이터에 연결됨) |
 | `/blog` (`?category=`), `/blog/[slug]` | 구현됨 |
 | `/projects`, `/projects/[slug]` | 구현됨 |
 | `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF와 Email은 값이 없어 숨김/안내 상태) |
