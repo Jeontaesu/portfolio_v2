@@ -92,8 +92,16 @@ components/
 
 아직 설치하지 않은 것: Markdown 파이프라인(`gray-matter`, `unified` 계열, `shiki`)은 Week 2 `lib/markdown/` 작업 시 설치한다. DB·인증 관련 패키지는 Phase 2 전까지 설치하지 않는다.
 
-## 8. 변경 이력
+## 8. 배포
+
+- Vercel 프로젝트: https://vercel.com/jeontaesus-projects/portfolio-v2
+- Production: https://portfolio-v2-ashen-eight.vercel.app
+- GitHub(`Jeontaesu/portfolio_v2`) 연동 자동 배포. `main` → Production, 그 외 브랜치·PR → Preview. 이유와 trade-off는 D-018.
+- `vercel.json` 없음. 환경 변수 없음 (`NEXT_PUBLIC_SITE_URL`은 Week 3 SEO 작업 시 추가).
+
+## 9. 변경 이력
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-14 (2)**: Vercel 첫 배포 완료, GitHub 자동 배포 방식을 §8에 기록했다.
 - **2026-10-14**: "코드 없음" 상태의 설계 문서를 실제 구현 기준으로 갱신. Home 골격, 공통 레이아웃(SkipLink / Header / MobileNav / Footer), 토큰, UI primitive 3종이 구현되어 있음을 반영하고, 미구현 영역(`lib/*`, 하위 라우트, SEO 파일)을 명시했다.

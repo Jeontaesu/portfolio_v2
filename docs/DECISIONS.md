@@ -123,3 +123,14 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **로고 터치 타겟**: 로고 링크 높이가 25~28px이라 `min-h-11`(44px)로 수정.
 - **검증 범위**: 가로 넘침 없음, h1 크기(40/72px), Pretendard 로드, nav/메뉴 전환, 헤더 높이, 44px 터치 타겟, 콘솔 오류 없음, Skip link, 포커스 링, 모바일 메뉴(열기, focus trap, Esc, 포커스 복귀). 스크린 리더 실제 낭독은 검증하지 않았다.
 - **날짜**: 2026-10-13
+
+## D-018. Vercel 배포: GitHub 연동 자동 배포
+
+- **결정**: Vercel 프로젝트 `portfolio-v2`(team `jeontaesus-projects`)를 GitHub 저장소 `Jeontaesu/portfolio_v2`와 연결한다. `main` push는 Production, 그 외 브랜치·PR은 Preview로 자동 배포한다. 프로덕션 도메인은 `https://portfolio-v2-ashen-eight.vercel.app`.
+- **이유**: push만으로 배포되어 수동 단계가 없고, PR마다 Preview URL이 생겨 머지 전 확인이 쉽다. CLI 배포(`vercel --prod`)는 커밋과 배포가 어긋날 수 있어 기본 경로로 쓰지 않는다.
+- **설정 방침**: `vercel.json`은 만들지 않는다. Next.js는 자동 감지되고, pnpm은 `packageManager` 필드로 고정되어 있다. Node 24는 프로젝트 설정(Settings → General)에서 지정한다. 설정이 코드에 필요해지면 그때 추가한다.
+- **CLI 용도**: 로그인된 Vercel CLI는 로그 확인(`vercel logs`), 환경 변수 관리(`vercel env`), 배포 목록 확인에만 쓴다. `.vercel/`은 `.gitignore`에 있다.
+- **환경 변수**: Phase 1은 필수 값이 없다. 도메인이 필요한 `metadataBase`, canonical, sitemap은 Week 3에 `NEXT_PUBLIC_SITE_URL`로 주입한다 (Production 값은 위 도메인, 커스텀 도메인을 붙이면 교체).
+- **trade-off**: Preview도 공개 URL이라 `noindex` 처리 여부를 SEO 작업 때 정해야 한다. 지금은 콘텐츠가 임시 데이터여서 검색 노출 위험이 있다.
+- **미확인**: Vercel 프로젝트의 Node 버전 설정, Production Branch가 `main`인지는 대시보드에서 확인하지 못했다.
+- **날짜**: 2026-10-14

@@ -60,7 +60,7 @@
 | Validation (Phase 2) | `[TBD]` 권장: Zod (폼·Server Action 공용 스키마) |
 | 이미지 저장 | P0: URL 또는 `public/` 정적 경로. 업로드(P1)는 외부 스토리지 필요 (Vercel 파일시스템은 영구 저장 안 됨) |
 | Font | Pretendard, `next/font/local` |
-| Deploy | Vercel + PostgreSQL 호스팅 `[TBD]` |
+| Deploy | Vercel (GitHub 연동 자동 배포, D-018) + PostgreSQL 호스팅 `[TBD]` (Phase 2) |
 | Tooling | ESLint, Prettier, Git/GitHub. Storybook은 MVP 이후 판단 |
 
 **버전 (2026-10-13 npm registry / nodejs.org 확인, 근거는 `docs/DECISIONS.md`)**
