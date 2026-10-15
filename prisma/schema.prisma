@@ -1,0 +1,98 @@
+// Data model for Phase 2 (CLAUDE.md §7). Field names match content/ types so lib/content can swap
+// its source from files to this database without changing page code.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/db/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  VIEWER
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ThumbnailFit {
+  COVER
+  CONTAIN
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(VIEWER)
+  createdAt DateTime @default(now())
+
+  posts Post[]
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  posts Post[]
+}
+
+model Post {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String        @unique
+  excerpt     String
+  /// Markdown source.
+  content     String
+  thumbnail   String?
+  status      ContentStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  // Deleting a category keeps its posts as uncategorized (D-023).
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  // Public list: status = PUBLISHED, newest first. Category filter.
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([categoryId])
+  @@index([authorId])
+}
+
+model Project {
+  id           String        @id @default(cuid())
+  title        String
+  slug         String        @unique
+  summary      String
+  /// Markdown source (Case Study body).
+  content      String
+  thumbnail    String?
+  thumbnailAlt String?
+  thumbnailFit ThumbnailFit  @default(COVER)
+  techStack    String[]
+  role         String
+  /// First day of the month; the site shows YYYY-MM.
+  startedAt    DateTime?     @db.Date
+  endedAt      DateTime?     @db.Date
+  githubUrl    String?
+  demoUrl      String?
+  featured     Boolean       @default(false)
+  sortOrder    Int           @default(0)
+  status       ContentStatus @default(DRAFT)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Public list: status = PUBLISHED, sortOrder ascending. Home: featured only.
+  @@index([status, sortOrder])
+  @@index([featured])
+}
