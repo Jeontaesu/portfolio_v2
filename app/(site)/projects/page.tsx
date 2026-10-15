@@ -26,7 +26,7 @@ export default async function ProjectsPage() {
       </header>
       <div className="mt-12">
         {projects.length > 0 ? (
-          <ProjectGrid projects={projects} />
+          <ProjectGrid projects={projects} headingLevel="h2" />
         ) : (
           <p className="border-t border-border pt-8 text-body text-secondary">
             Case Study를 준비하고 있습니다.

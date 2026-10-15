@@ -37,7 +37,7 @@ export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
       {posts.length > 0 ? (
         <ul className="mt-10 border-b border-border">
           {posts.map((post) => (
-            <PostListItem key={post.slug} post={post} />
+            <PostListItem key={post.slug} post={post} headingLevel="h2" />
           ))}
         </ul>
       ) : (
