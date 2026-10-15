@@ -1,5 +1,8 @@
+import Link from "next/link";
+
 import { PostTable } from "@/components/features/blog/post-table";
 import { StatCard } from "@/components/features/dashboard/stat-card";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getDashboardStats, getRecentPosts } from "@/lib/admin/queries";
 import { requireAdmin } from "@/lib/auth/guard";
@@ -36,7 +39,15 @@ export default async function DashboardPage() {
         {recentPosts.length > 0 ? (
           <PostTable rows={recentPosts} caption="최근 수정한 글 5개" />
         ) : (
-          <EmptyState title="아직 글이 없습니다." description="첫 게시글을 작성해보세요." />
+          <EmptyState
+            title="아직 글이 없습니다."
+            description="첫 게시글을 작성해보세요."
+            action={
+              <Button asChild size="sm">
+                <Link href="/admin/posts/new">New Post</Link>
+              </Button>
+            }
+          />
         )}
       </section>
     </div>

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type { AdminPostRow } from "@/lib/admin/queries";
 import { formatDateKst } from "@/lib/utils/format-date";
 
@@ -32,7 +34,12 @@ export function PostTable({ rows, caption }: { rows: readonly AdminPostRow[]; ca
           {rows.map((post) => (
             <tr key={post.id} className="border-b border-border">
               <th scope="row" className="py-4 pr-4 text-left text-body-sm font-semibold">
-                {post.title}
+                <Link
+                  href={`/admin/posts/${post.id}`}
+                  className="inline-flex min-h-11 items-center hover:underline"
+                >
+                  {post.title}
+                </Link>
               </th>
               <td className="hidden py-4 pr-4 text-body-sm text-secondary md:table-cell">
                 {post.categoryName ?? "—"}

@@ -128,3 +128,34 @@ export async function getAllCategories(): Promise<{ slug: string; name: string }
   await requireAdmin();
   return db.category.findMany({ orderBy: { name: "asc" }, select: { slug: true, name: true } });
 }
+
+export type AdminPostDetail = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  status: StatusFilter;
+  categoryId: string | null;
+};
+
+export async function getAdminPost(id: string): Promise<AdminPostDetail | null> {
+  await requireAdmin();
+  return db.post.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      content: true,
+      status: true,
+      categoryId: true,
+    },
+  });
+}
+
+export async function getCategoryOptions(): Promise<{ id: string; name: string }[]> {
+  await requireAdmin();
+  return db.category.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } });
+}

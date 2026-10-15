@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { Plus } from "lucide-react";
+
 import { PostTable } from "@/components/features/blog/post-table";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -52,7 +55,15 @@ export default async function AdminPostsPage({ searchParams }: PageProps<"/admin
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-h2">Posts</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-h2">Posts</h1>
+        <Button asChild>
+          <Link href="/admin/posts/new">
+            <Plus className="size-5" aria-hidden="true" />
+            New Post
+          </Link>
+        </Button>
+      </div>
 
       {/* Plain GET form: filters live in the URL, work without JS and can be shared. */}
       <form
@@ -114,12 +125,20 @@ export default async function AdminPostsPage({ searchParams }: PageProps<"/admin
           description="검색어나 필터를 바꿔 보세요."
           action={
             <Button asChild variant="secondary" size="sm">
-              <a href="/admin/posts">필터 초기화</a>
+              <Link href="/admin/posts">필터 초기화</Link>
             </Button>
           }
         />
       ) : (
-        <EmptyState title="아직 글이 없습니다." description="첫 게시글을 작성해보세요." />
+        <EmptyState
+          title="아직 글이 없습니다."
+          description="첫 게시글을 작성해보세요."
+          action={
+            <Button asChild size="sm">
+              <Link href="/admin/posts/new">New Post</Link>
+            </Button>
+          }
+        />
       )}
     </div>
   );
