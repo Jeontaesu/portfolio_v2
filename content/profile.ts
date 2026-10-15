@@ -34,8 +34,7 @@ export const profile = {
     velog: "https://velog.io/@meflow/posts",
     notion:
       "https://amusing-bugle-9be.notion.site/dc7b50a46631412b9a9d6fee9876b2f2?v=eebf0f2a2bc843ba902865cfcbf7d447",
-    // [TBD] Contact email — to be provided by the owner.
-    email: undefined as string | undefined,
+    email: "jts50@naver.com" as string | undefined,
   },
   /** Total career as of 2026-10 (11 years 1 month). */
   careerYears: 11,

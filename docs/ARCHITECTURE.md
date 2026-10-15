@@ -34,7 +34,7 @@ app/(site)/   ← Server Component 기본, 빌드 시 정적 생성 (/blog 만 �
 | `/blog` (`?category=`), `/blog/[slug]` | 구현됨 |
 | `/projects`, `/projects/[slug]` | 구현됨 |
 | `/admin/login`, `/admin/dashboard`(자리 표시) | 구현됨 (GitHub 로그인, 관리자 확인. Dashboard 내용은 Week 6) |
-| `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF와 Email은 값이 없어 숨김/안내 상태) |
+| `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF·Email·Velog 값 연결됨) |
 
 SEO 파일: `app/sitemap.ts`, `app/robots.ts`, `app/opengraph-image.tsx`, `blog/[slug]`·`projects/[slug]`의 `opengraph-image.tsx`, `app/not-found.tsx`, `app/(site)/error.tsx`. 페이지 metadata는 `lib/seo/metadata.ts`의 `pageMetadata()`로 title·description·canonical·Open Graph를 함께 만든다 (D-021).
 
@@ -91,7 +91,7 @@ components/
 - **ExternalLink**: `target="_blank"`, `rel="noopener noreferrer"`, `↗` 아이콘, sr-only "(새 창)". 외부 링크는 이 컴포넌트로만 만든다.
 - **NavLink / NAV_ITEMS**: 데스크톱·모바일 메뉴가 같은 목록과 같은 링크 컴포넌트를 쓴다.
 - **MobileNav**: Radix Dialog로 focus trap, Esc, 스크롤 잠금, 포커스 복귀를 처리한다. 직접 구현하지 않는다. Radix 1.3은 스크롤 잠금을 `Dialog.Overlay`가 담당하므로 전체 화면 Content여도 Overlay를 렌더링해야 한다 (D-017).
-- 값이 없는 링크(Velog, Email)는 `Contact`와 `SiteFooter`가 렌더링하지 않는다. 값은 `content/profile.ts`에서 온다.
+- 값이 없는 링크는 `Contact`와 `SiteFooter`가 렌더링하지 않는다. 값은 `content/profile.ts`에서 온다.
 
 ## 6. 스타일 구조
 

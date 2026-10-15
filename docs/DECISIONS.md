@@ -111,7 +111,7 @@
 - Button `sm`은 40px로 44px 터치 타겟에 못 미친다. 밀도가 높은 데스크톱 UI용이며 `md`(44px), `lg`(48px)를 기본으로 쓴다.
 - CVA는 variant × size 두 축을 가진 Button, Badge에만 쓴다.
 - `next dev`가 `AGENTS.md`를 자동 생성해서 `next.config.ts`에 `agentRules: false`를 설정했다 (`CLAUDE.md`가 단일 기준).
-- Footer·Contact는 `content/profile.ts`에 값이 있는 링크만 렌더링한다. Velog URL과 이메일은 `[TBD]`(사용자 제공 대기).
+- Footer·Contact는 `content/profile.ts`에 값이 있는 링크만 렌더링한다. Velog URL과 이메일은 사용자에게 받아 2026-10-15에 채웠다. 전화번호는 스팸·스크래핑 노출을 피하려고 사이트에 싣지 않고 이력서 PDF에만 둔다.
 - **날짜**: 2026-10-13
 
 ## D-017. Step 7 브라우저 검증에서 찾은 문제
@@ -154,7 +154,7 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **기간 표기**: 프로젝트 기간은 기술서 표기를 그대로 쓰고, "진행 중" 두 건은 종료 시점을 추정하지 않고 `2024.02 ~`로만 표기했다.
 - **고용 형태**: 기술서에 명시된 프리랜서만 표기하고 나머지는 비워 두었다.
 - **기술 목록**: 기술서에 있는 것만 "실무 사용"에 넣었다. 기존 디자인 문서의 jQuery는 기술서에 없어 제외했다. React는 "협업 퍼블리싱"으로 한정했다.
-- **링크**: Velog, Notion을 `ProfileLinks` 한 곳에서 Footer·Contact·`/contact`에 노출한다. Email은 값이 없어 아직 숨긴다.
+- **링크**: Velog, Notion을 `ProfileLinks` 한 곳에서 Footer·Contact·`/contact`에 노출한다. Email은 값이 채워져(2026-10-15) 함께 노출된다.
 - **날짜**: 2026-10-14
 
 ## D-021. SEO: 사이트 URL, Preview noindex, OG 이미지
