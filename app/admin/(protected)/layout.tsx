@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
+import { AdminMobileNav } from "@/components/layout/admin-mobile-nav";
+import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { SkipLink } from "@/components/layout/skip-link";
-import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth/config";
 import { requireAdmin } from "@/lib/auth/guard";
 
@@ -10,6 +11,7 @@ import { requireAdmin } from "@/lib/auth/guard";
 // layouts are not re-run on every client-side navigation and are not a security boundary on their own.
 export default async function ProtectedAdminLayout({ children }: { children: ReactNode }) {
   const admin = await requireAdmin();
+  const userLabel = admin.name ?? admin.email;
 
   async function signOutAction() {
     "use server";
@@ -20,24 +22,26 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
   return (
     <>
       <SkipLink />
-      <header className="border-b border-border bg-surface">
-        <div className="flex h-16 items-center justify-between gap-4 px-5 lg:px-10">
-          <p className="text-body font-semibold">MEFLOWEB Admin</p>
-          <div className="flex items-center gap-4">
-            <p className="hidden text-body-sm text-secondary md:block">
-              {admin.name ?? admin.email}
-            </p>
-            <form action={signOutAction}>
-              <Button type="submit" variant="secondary" size="sm">
-                로그아웃
-              </Button>
-            </form>
-          </div>
+      <div className="lg:grid lg:grid-cols-[240px_1fr]">
+        <aside className="sticky top-0 hidden h-dvh border-r border-border bg-surface lg:block">
+          <AdminSidebar userLabel={userLabel} signOutAction={signOutAction} />
+        </aside>
+        <div className="min-w-0">
+          <header className="flex h-16 items-center justify-between border-b border-border bg-surface px-4 lg:hidden">
+            <p className="text-body font-semibold">MEFLOWEB Admin</p>
+            <AdminMobileNav>
+              <AdminSidebar userLabel={userLabel} signOutAction={signOutAction} />
+            </AdminMobileNav>
+          </header>
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className="min-h-dvh bg-surface px-4 py-8 outline-none lg:min-h-0 lg:px-8"
+          >
+            {children}
+          </main>
         </div>
-      </header>
-      <main id="main-content" tabIndex={-1} className="px-5 py-10 outline-none lg:px-10">
-        {children}
-      </main>
+      </div>
     </>
   );
 }
