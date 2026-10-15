@@ -75,7 +75,7 @@ Success / Warning 원색은 텍스트로 쓰지 않는다 (대비 미달, 아래
 | Warning `#D97706` | 3.19 | 3.05 | 텍스트 불가, 아이콘·큰 텍스트만 |
 | 흰 텍스트 on Primary | 5.17 | — | AA |
 | 흰 텍스트 on Error | 4.83 | — | AA |
-| Border `#E5E7EB` | 1.24 | 1.19 | 장식용. Input 테두리처럼 식별이 필요한 경계는 더 진한 색 필요 `[TBD]` |
+| Border `#E5E7EB` | 1.24 | 1.19 | 장식용. Input 테두리처럼 식별이 필요한 경계는 `--muted`(#6B7280, 4.83)를 쓴다 (D-026) |
 
 Badge 등 tinted 배경(예: success 10% 배경 + Success Text)은 실제 배경색 기준으로 다시 측정한다.
 

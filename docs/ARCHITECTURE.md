@@ -1,7 +1,7 @@
 # ARCHITECTURE.md
 
 구현 구조 문서. 규칙·디렉터리 책임의 기준은 `CLAUDE.md §5`, 이 문서는 실제 구현이 생길 때마다 갱신한다.
-현재 단계: Phase 2 진행 중 (Week 4 DB 연동 완료, Week 5 인증 구현). Public 사이트는 Phase 1로 배포 완료. 마지막 갱신: 2026-10-15.
+현재 단계: Phase 2 진행 중 (Week 4 DB, Week 5 인증, Week 6–7 Admin CMS 구현). Public 사이트는 Phase 1로 배포 완료. 마지막 갱신: 2026-10-15.
 
 각 항목은 **구현됨** / **설계만 있음**으로 구분한다.
 
@@ -33,7 +33,10 @@ app/(site)/   ← Server Component 기본, 빌드 시 정적 생성 (/blog 만 �
 | `/` | 구현됨 (모든 섹션이 실제 데이터에 연결됨) |
 | `/blog` (`?category=`), `/blog/[slug]` | 구현됨 |
 | `/projects`, `/projects/[slug]` | 구현됨 |
-| `/admin/login`, `/admin/dashboard`(자리 표시) | 구현됨 (GitHub 로그인, 관리자 확인. Dashboard 내용은 Week 6) |
+| `/admin/login`, `/admin/dashboard` | 구현됨 (GitHub 로그인, Dashboard는 DB 실집계) |
+| `/admin/posts`, `/new`, `/[id]` | 구현됨 (검색·상태·카테고리 필터·페이지는 URL, 작성/수정/삭제, Write/Preview) |
+| `/admin/projects`, `/new`, `/[id]` | 구현됨 (정렬 버튼, Featured 토글, 작성/수정/삭제) |
+| `/admin/categories`, `/new`, `/[id]` | 구현됨 (삭제 시 글은 미분류) |
 | `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF·Email·Velog 값 연결됨) |
 
 SEO 파일: `app/sitemap.ts`, `app/robots.ts`, `app/opengraph-image.tsx`, `blog/[slug]`·`projects/[slug]`의 `opengraph-image.tsx`, `app/not-found.tsx`, `app/(site)/error.tsx`. 페이지 metadata는 `lib/seo/metadata.ts`의 `pageMetadata()`로 title·description·canonical·Open Graph를 함께 만든다 (D-021).
@@ -50,10 +53,25 @@ app/api/auth/[...nextauth]/route.ts   Auth.js 핸들러
 - 변수: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` (Production은 Vercel, 로컬은 `.env.local`에 별도 OAuth App).
 - 세션 JWT는 힌트이고 권한은 요청마다 DB로 확인한다. 보호할 Server Action·Route Handler는 첫 줄에서 `requireAdmin()`을 호출한다.
 
+## 2-2. Admin CMS 구조 (Week 6–7)
+
+```text
+lib/validations/     Zod 스키마 (post, project, category, common)
+lib/admin/queries.ts 관리자 읽기 (각 함수가 requireAdmin 호출)
+lib/admin/actions/   Server Action: post, project, category, preview (각각 requireAdmin + Zod 검증)
+lib/admin/form-state.ts, revalidate.ts   폼 결과 타입, 공개 페이지 재검증
+components/layout/   admin-sidebar, admin-nav-links, admin-mobile-nav (lg 미만은 Drawer)
+components/features/ blog/(post-form, post-table, category-form), projects/project-form, dashboard/stat-card, admin/(markdown-editor, form-status)
+components/ui/       input, select, textarea, checkbox-field, form-field, submit-button, confirm-delete, empty-state, pagination
+```
+
+- 흐름: 폼 → `useActionState` → Server Action → `requireAdmin()` → Zod → Prisma → `revalidatePublicSite()` → redirect/성공 메시지. 선택 이유는 D-026.
+- 상태: Admin 라우트에 `loading.tsx`, `error.tsx`(일반 문구만)가 있고, 목록은 empty / 필터 결과 없음 상태를 처리한다.
+
 ## 3. 렌더링 경계
 
 - 기본은 Server Component. `"use client"`는 상호작용이 필요한 말단 컴포넌트에만 둔다.
-- 현재 Client Component는 3개다 (Admin 로그인·로그아웃은 Server Action이라 추가 없음) (`(site)/error.tsx`는 Next 요구사항).
+- Public의 Client Component는 3개다 (`(site)/error.tsx`는 Next 요구사항). Admin에는 상호작용이 필요한 폼·네비게이션·다이얼로그만 Client다 (`post-form`, `project-form`, `category-form`, `markdown-editor`, `form-status`, `submit-button`, `confirm-delete`, `admin-nav-links`, `admin-mobile-nav`, 보호 영역 `error.tsx`).
   - `components/layout/mobile-nav.tsx` — Radix Dialog 상태 (열림/닫힘).
   - `components/layout/nav-link.tsx` — `usePathname()`으로 `aria-current` 계산.
 - 반응형은 CSS로 처리하고 viewport JS 감지는 쓰지 않는다. 헤더는 `md`(768px)에서 데스크톱 메뉴와 모바일 메뉴를 CSS(`hidden md:block` / `md:hidden`)로 전환한다.
@@ -113,7 +131,7 @@ components/
 | 스크립트 | `dev`, `build`, `start`, `lint`, `typecheck`, `format`, `format:check` |
 | 런타임 | Node >=24, pnpm 12.11.2 (`packageManager`) |
 | DB | PostgreSQL(Neon). Prisma 7.10.0 (`prisma-client` generator, `@prisma/adapter-pg`). 생성된 클라이언트는 `lib/db/generated`(git 제외, `postinstall`에서 생성). 런타임은 pooled `DATABASE_URL`, migration·seed는 `DATABASE_URL_UNPOOLED` |
-| 설치된 UI 의존성 | `@radix-ui/react-dialog`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, `clsx`, `tailwind-merge` |
+| 설치된 UI 의존성 | `@radix-ui/react-dialog`, `@radix-ui/react-alert-dialog`, `@radix-ui/react-tabs`, `@radix-ui/react-slot`, `zod`, `class-variance-authority`, `lucide-react`, `clsx`, `tailwind-merge` |
 
 DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용만), `db:seed`, `db:studio`. 인증은 `next-auth` 5.0.0-beta.32 (D-025). Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-only`)은 정확한 버전으로 고정해 설치했다. 
 
@@ -128,6 +146,7 @@ DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-15 (3)**: Admin CMS(사이드바 셸, Dashboard 집계, 글·프로젝트·카테고리 CRUD, Markdown Preview, 삭제 확인)와 Zod 검증 추가. `/admin/posts` 목록 제목 레벨을 h2로 정리 (D-026).
 - **2026-10-15 (2)**: Auth.js v5 + GitHub 로그인, `requireAdmin()` 가드, `/admin/login`·보호된 Admin 레이아웃·Dashboard 자리 표시, robots에서 `/admin` 차단 (D-025).
 - **2026-10-15**: Prisma schema·init migration, DB 클라이언트, seed, `lib/content/`의 DB 조회 전환, 카테고리 DB화 (D-024).
 - **2026-10-14 (5)**: SEO(metadata·canonical·OG 이미지·sitemap·robots·JSON-LD), not-found, error 경계 추가. `SiteShell` 분리 (D-021).

@@ -209,3 +209,20 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **검증 (2026-10-15)**: 실제 GitHub 로그인 없이, `AUTH_SECRET`으로 세션 쿠키를 만들어 `next start`에서 11개를 확인했다. 쿠키 없음·깨진 쿠키·DB에 없는 사용자·VIEWER는 로그인 페이지로, ADMIN은 대시보드로 이동하고, 로그인 페이지 루프가 없고, 로그인 오류 문구와 noindex가 나오고, `/api/auth/providers`가 github를 반환한다. **GitHub OAuth 왕복(승인 → 콜백 → 세션)은 브라우저에서 아직 확인하지 않았다.**
 - **발견한 점**: `next start`(production 모드)는 `UntrustedHost`로 모든 인증 요청을 500으로 거부한다. Vercel은 `VERCEL` 변수로 자동 신뢰되고 `next dev`도 문제없다. 코드에서 `trustHost: true`로 열지 않고, 로컬 production 테스트 때만 `AUTH_TRUST_HOST=true`를 준다.
 - **날짜**: 2026-10-15
+
+## D-026. Admin CMS: 폼·검증·미리보기·삭제 방식
+
+- **Input 테두리 = 기존 `--muted`**: `--border`(대비 1.24)는 장식용이라 입력창 경계로는 WCAG 1.4.11(UI 경계 3:1)에 미달한다. `--muted`(4.83)를 재사용해 새 색 토큰을 만들지 않았다. 사용자 확인 후 결정 (2026-10-15).
+- **Zod 4.6.7 (정확한 버전 고정)**: 스키마 하나를 Server Action에서 서버 검증에 쓴다. 폼 값은 전부 문자열로 오므로 빈 문자열 → `undefined`, 체크박스 `"on"` → boolean, 쉼표 구분 기술 스택 → 배열, `YYYY-MM` → 날짜를 스키마에서 변환한다 (`lib/validations/`).
+- **모든 Server Action은 첫 줄에서 `requireAdmin()`**: Server Action은 누구나 POST할 수 있는 공개 엔드포인트다. 폼을 숨기는 것은 권한이 아니다. 관리자 읽기 쿼리(`lib/admin/queries.ts`)도 각각 `requireAdmin()`을 부른다.
+- **폼 상태는 `useActionState`**: 반환값 `{ status, message, fieldErrors }`로 필드 오류를 보여준다. 실패하면 오류 요약(`role="alert"`)으로 포커스가 이동하고 항목이 각 필드로 링크된다. 성공은 `role="status"`로 알린다. 오류 메시지는 일반 문구만 쓰고 DB 오류는 서버 로그에만 남긴다. 생성 후에는 편집 페이지로 `redirect`한다.
+- **slug 중복은 사전 조회 + `P2002` 처리**: 사전 조회는 좋은 오류 메시지를 위해, `P2002` 처리는 두 요청이 동시에 들어오는 경쟁 상황을 위해 둘 다 둔다.
+- **게시일 유지**: 처음 게시할 때만 `publishedAt`을 정하고, 초안으로 되돌렸다 다시 게시해도 원래 게시일을 유지한다. 공개 쿼리는 `status = PUBLISHED`만 읽는다.
+- **재검증은 `revalidatePath("/", "layout")` 한 줄**: 글·프로젝트는 Home, 목록, 상세, OG 이미지, sitemap에 나온다. 경로를 하나씩 추적하면 slug가 바뀔 때 옛 경로가 남을 수 있어, 페이지가 몇 개 안 되는 이 사이트에서는 전체 재검증이 더 안전하다. trade-off: 저장마다 공개 페이지가 다시 만들어진다.
+- **Markdown 미리보기는 서버에서**: `previewMarkdown` Server Action이 공개 페이지와 같은 `renderMarkdown`(sanitize 포함)을 쓴다. 클라이언트에 Markdown 라이브러리를 번들하지 않고, 미리보기가 실제 결과와 같다. 비용: 탭을 열 때마다 서버 왕복. 탭은 Radix Tabs를 써 방향키·포커스를 직접 구현하지 않았다. 본문은 상태 + hidden input으로 제출해 Preview 탭이 열려 있어도 값이 전송된다.
+- **삭제는 Radix AlertDialog**: 취소에 먼저 포커스되고, 바깥 클릭으로 닫히지 않는다. 카테고리를 삭제하면 글은 미분류로 남고(SetNull) 확인 문구에 영향 받는 글 수를 보여준다.
+- **프로젝트 정렬은 위·아래 버튼**: 항상 1..n으로 다시 번호를 매기는 트랜잭션이라 sortOrder가 같거나 비어 있어도 클릭이 무반응이 되지 않는다. 드래그 정렬은 P1.
+- **썸네일은 `/`로 시작하는 public 경로만**: `next/image`는 원격 호스트를 `next.config`에 등록해야 하고, 업로드는 Media 기능에서 다룬다. 외부 URL 입력은 지금 거부한다. 링크 URL은 `http(s)`만 허용해 `javascript:`를 막는다.
+- **저장하지 않은 변경 경고는 `beforeunload`만**: 탭 닫기·새로고침은 막지만 앱 안의 링크 이동은 막지 못한다. 에디터 안에는 앱 내 링크가 없어 현재는 충분하다.
+- **날짜**: 2026-10-15
+

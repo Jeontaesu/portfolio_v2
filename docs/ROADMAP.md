@@ -135,8 +135,8 @@ Phase 2 주제 후보: 파일 → DB 이전, Server Action vs Route Handler, Aut
 - [ ] Lighthouse 결과 캡처
 
 **Phase 2**
-- [ ] Admin CMS, Prisma schema + migration
-- [ ] `docs/DECISIONS.md`
+- [x] Admin CMS, Prisma schema + migration
+- [x] `docs/DECISIONS.md`
 - [ ] README 업데이트 (환경 변수, 아키텍처)
 
 ---

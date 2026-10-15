@@ -12,7 +12,7 @@
 - **Blog**: Markdown 글, 카테고리 필터(`?category=`), 목차, 코드 하이라이트
 - **About · Career · Resume · Contact**: 경력 데이터 한 곳(`content/profile.ts`)에서 렌더링
 - **SEO**: 페이지별 metadata·canonical·Open Graph, 빌드 시 생성하는 OG 이미지, sitemap, robots, JSON-LD
-- **Admin (진행 중)**: GitHub 로그인(Auth.js), DB의 ADMIN 허용 목록 확인, `noindex`인 보호 영역. Dashboard와 CRUD는 아직 없습니다.
+- **Admin**: GitHub 로그인(Auth.js), DB의 ADMIN 허용 목록 확인, `noindex`인 보호 영역. Dashboard(실집계), 글·프로젝트·카테고리 CRUD, Draft/Publish, Markdown Write/Preview, 프로젝트 정렬.
 - **접근성**: Skip link, 키보드로 쓸 수 있는 모바일 메뉴(Radix Dialog), `focus-visible` 스타일, 44px 터치 영역, WCAG 2.1 AA 대비를 맞춘 색상 토큰
 
 ## 기술 스택
@@ -104,7 +104,7 @@ Windows에서 Node를 직접 설치했다면 nvm-windows의 전환이 막힐 수
 
 ## 콘텐츠 추가
 
-글과 프로젝트는 DB에서 읽습니다. Admin CMS가 완성되기 전에는 `content/`에 파일을 쓰고 `pnpm db:seed`로 옮깁니다. seed는 같은 slug의 기존 행을 덮어쓰지 않으니, 이미 올린 글을 고치려면 DB에서 수정하세요.
+글과 프로젝트는 DB에서 읽습니다. `/admin`에서 작성하는 것이 기본이고, 아래 파일 방식은 처음 DB를 채우는 seed용입니다. seed는 같은 slug의 기존 행을 덮어쓰지 않습니다.
 
 **블로그 글**: `content/posts/<slug>.md`
 
@@ -126,5 +126,5 @@ frontmatter가 잘못되면 seed가 어떤 파일의 어떤 필드인지 알려 
 ## 로드맵
 
 - [x] Phase 1: Public 사이트 배포 (Home, Projects, Blog, About, Career, Resume, Contact, SEO)
-- [x] Phase 2 (일부): PostgreSQL + Prisma, 파일 → DB 이전, Auth.js 관리자 로그인
-- [ ] Phase 2 (남음): Admin Dashboard, 글·프로젝트·카테고리 CRUD, Draft/Publish
+- [x] Phase 2: PostgreSQL + Prisma, 파일 → DB 이전, Auth.js 관리자 로그인, Admin CMS(CRUD, Draft/Publish)
+- [ ] 이후: 태그, 검색, 이미지 업로드, 댓글, 조회수

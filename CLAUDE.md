@@ -4,7 +4,7 @@
 목적: 웹 퍼블리셔가 React / TypeScript / Next.js 기반 프론트엔드 개발자로 확장했음을 **코드와 실제 서비스로 증명**한다.
 우선순위: 기능의 양 < 구조, 화려함 < 완성도, 복잡함 < 명확함.
 
-**현재 단계: Phase 1 — 3주 안에 Public 사이트 배포** (DB·인증·Admin 없음). 범위는 §8.
+**현재 단계: Phase 2 — Public 사이트(Phase 1)는 배포 완료, DB·인증·Admin CMS 구현 중.** 범위는 §8.
 
 관련 문서:
 - 디자인 기준 → `docs/PORTFOLIO_DESIGN.md` (UI 작업 시 반드시 읽음)
@@ -179,7 +179,7 @@ docs/
 - 아이콘은 `lucide-react` 하나로 통일. 개별 import만 사용한다. 장식 아이콘은 `aria-hidden`, 의미 있으면 라벨 제공.
 - shadcn/ui 소스를 가져올 때 색상 토큰 이름을 매핑한다: 이 프로젝트의 `--secondary`는 **보조 텍스트 색**이며 shadcn의 secondary(배경색)와 의미가 다르다. 가져온 코드의 `bg-secondary`·`text-secondary-foreground` 등을 그대로 쓰지 말고 `docs/PORTFOLIO_DESIGN.md` 토큰에 맞게 고친다.
 - 타이포 Mobile 값은 `lg` 미만에 적용되므로 태블릿(768–1023px)은 레이아웃은 8열, 글자 크기는 Mobile 값이다 (의도된 동작).
-- Input 등 식별이 필요한 경계선 색은 해당 컴포넌트 작업 시 확정한다 (`--border`는 대비 1.24라 장식용). `[TBD]`
+- Input 등 식별이 필요한 경계선은 `--muted`(#6B7280, 흰 배경 대비 4.83)를 쓴다. `--border`(대비 1.24)는 장식용이다. 새 색 토큰은 만들지 않는다 (D-026).
 
 ### 접근성 (Public·Admin 동일 기준)
 - Semantic HTML (`header`, `nav`, `main`, `article`, `section`, 목록 요소).
