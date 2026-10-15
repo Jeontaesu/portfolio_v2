@@ -1,4 +1,4 @@
-import { categoryName } from "@/components/features/blog/post-list-item";
+import { UNCATEGORIZED_LABEL } from "@/components/features/blog/post-list-item";
 import { getPost, getPosts } from "@/lib/content/posts";
 import { OG_CONTENT_TYPE, OG_SIZE, renderOgImage } from "@/lib/seo/og-image";
 
@@ -14,7 +14,7 @@ export default async function PostOgImage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const post = await getPost(slug);
   return renderOgImage({
-    eyebrow: post ? `BLOG · ${categoryName(post.category).toUpperCase()}` : "BLOG",
+    eyebrow: post ? `BLOG · ${(post.category?.name ?? UNCATEGORIZED_LABEL).toUpperCase()}` : "BLOG",
     title: post?.title ?? "Blog",
   });
 }

@@ -9,8 +9,7 @@ import path from "node:path";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 import { projects } from "../content/projects";
-import { readAllPostFiles } from "../lib/content/post-file";
-import { POST_CATEGORIES } from "../lib/content/types";
+import { POST_CATEGORIES, readAllPostFiles } from "../lib/content/post-file";
 import { PrismaClient } from "../lib/db/generated/client";
 
 try {

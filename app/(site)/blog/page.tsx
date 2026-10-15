@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { CategoryFilter } from "@/components/features/blog/category-filter";
 import { PostListItem } from "@/components/features/blog/post-list-item";
-import { getPosts, isPostCategory } from "@/lib/content/posts";
+import { getPostCategories, getPosts } from "@/lib/content/posts";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = pageMetadata({
@@ -15,7 +15,9 @@ export const metadata: Metadata = pageMetadata({
 export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
   const { category: rawCategory } = await searchParams;
   const value = Array.isArray(rawCategory) ? rawCategory[0] : rawCategory;
-  const category = isPostCategory(value) ? value : undefined;
+  const categories = await getPostCategories();
+  // An unknown ?category= falls back to All instead of an empty list.
+  const category = categories.find((c) => c.slug === value)?.slug;
   const posts = await getPosts({ category });
 
   return (
@@ -30,7 +32,7 @@ export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
         </p>
       </header>
       <div className="mt-10">
-        <CategoryFilter current={category} />
+        <CategoryFilter categories={categories} current={category} />
       </div>
       {posts.length > 0 ? (
         <ul className="mt-10 border-b border-border">

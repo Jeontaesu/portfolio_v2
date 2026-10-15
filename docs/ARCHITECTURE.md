@@ -1,27 +1,28 @@
 # ARCHITECTURE.md
 
 구현 구조 문서. 규칙·디렉터리 책임의 기준은 `CLAUDE.md §5`, 이 문서는 실제 구현이 생길 때마다 갱신한다.
-현재 단계: Phase 1 (DB·인증·Admin 없음). 마지막 갱신: 2026-10-14 (Home 골격 + 공통 레이아웃 구현 시점).
+현재 단계: Phase 2 진행 중 (Week 4: DB 연동). Public 사이트는 Phase 1로 배포 완료. 마지막 갱신: 2026-10-15.
 
 각 항목은 **구현됨** / **설계만 있음**으로 구분한다.
 
 ## 1. 데이터 흐름 (Phase 1)
 
 ```text
-content/*.md, content/*.ts
-        │  (빌드 시 읽기)
-lib/content/  ← 페이지는 이 함수로만 콘텐츠를 읽는다 (server-only)      [posts·projects 구현됨]
+PostgreSQL (Neon)  ←  prisma/seed.ts 가 content/ 의 파일을 1회 이전
+        │  (Prisma + @prisma/adapter-pg, lib/db/client.ts)
+lib/content/  ← 페이지는 이 함수로만 콘텐츠를 읽는다 (server-only)      [DB 조회로 전환됨]
         │
 lib/markdown/ ← Markdown → sanitize된 HTML, 목차 추출                    [구현됨]
         │
-app/(site)/   ← Server Component 기본, 정적 생성                         [Home, Blog, Projects 구현]
+app/(site)/   ← Server Component 기본, 빌드 시 정적 생성 (/blog 만 요청 시) [Home, Blog, Projects 구현]
 ```
 
 - 콘텐츠 필드 이름은 `CLAUDE.md §7`의 모델과 동일하게 쓴다.
-- `status: DRAFT`는 빌드에서 제외한다.
-- 이후 단계에서 DB로 옮길 때는 `lib/content/` 내부만 바꾸고 페이지 코드는 유지한다.
+- `status = PUBLISHED`만 조회한다. DRAFT는 `lib/content/` 쿼리에서 걸러져 어떤 페이지에도 나오지 않는다.
+- 파일 → DB 전환은 `lib/content/` 내부와 카테고리 목록을 받는 컴포넌트 props만 바꿨고, 나머지 페이지 코드는 유지했다 (D-024).
+- 페이지는 빌드 시점의 DB 내용으로 정적 생성된다. Admin에서 수정한 내용을 반영하려면 Server Action에서 해당 경로를 revalidate해야 한다 (Week 6–7 작업).
 
-**현재 실제 상태**: `lib/content/`는 `posts.ts`, `projects.ts`, `types.ts`가 있고, `lib/markdown/`은 `render.ts`(파이프라인)와 `toc.ts`가 있다. `lib/seo/`는 `site.ts`(사이트 URL·인덱싱 여부), `metadata.ts`, `og-image.tsx`가 있다. 콘텐츠: 블로그 글 2개(`content/posts/`), Case Study 3개(`content/projects.ts` + `content/projects/*.md`). About/Career/Resume/Contact/Footer는 `content/profile.ts`를 직접 import한다 (경력은 `career`, 링크·기술은 `profile`). 콘텐츠가 이 한 파일이라 `lib/content/`로 감싸는 것은 CMS화 시점으로 미룬다.
+**현재 실제 상태**: `lib/content/`는 `posts.ts`, `projects.ts`(DB 조회), `types.ts`(페이지가 받는 타입), `post-file.ts`(seed용 파일 파서)가 있고, `lib/db/client.ts`가 Prisma 클라이언트를 만든다. `lib/markdown/`은 `render.ts`와 `toc.ts`, `lib/seo/`는 `site.ts`, `metadata.ts`, `og-image.tsx`가 있다. About/Career/Resume/Contact/Footer는 아직 `content/profile.ts`를 직접 import한다 (경력·링크는 DB 대상이 아니다). `content/posts/*.md`, `content/projects.ts`, `content/projects/*.md`는 이제 **seed 원본**이다.
 
 파이프라인 순서와 이유는 D-019. `status: DRAFT`는 `lib/content`에서 걸러져 어떤 페이지에도 노출되지 않는다.
 
@@ -95,9 +96,10 @@ components/
 | Prettier + tailwind 플러그인 | 설정됨, `CLAUDE.md`·`docs/` 제외 (D-014) |
 | 스크립트 | `dev`, `build`, `start`, `lint`, `typecheck`, `format`, `format:check` |
 | 런타임 | Node >=24, pnpm 12.11.2 (`packageManager`) |
+| DB | PostgreSQL(Neon). Prisma 7.10.0 (`prisma-client` generator, `@prisma/adapter-pg`). 생성된 클라이언트는 `lib/db/generated`(git 제외, `postinstall`에서 생성). 런타임은 pooled `DATABASE_URL`, migration·seed는 `DATABASE_URL_UNPOOLED` |
 | 설치된 UI 의존성 | `@radix-ui/react-dialog`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, `clsx`, `tailwind-merge` |
 
-Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-only`)은 정확한 버전으로 고정해 설치했다. DB·인증 관련 패키지는 Phase 2 전까지 설치하지 않는다.
+DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용만), `db:seed`, `db:studio`. 인증 패키지(Auth.js)는 Week 5에 설치한다. Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-only`)은 정확한 버전으로 고정해 설치했다. 
 
 ## 8. 배포
 
@@ -110,6 +112,7 @@ Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-on
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-15**: Prisma schema·init migration, DB 클라이언트, seed, `lib/content/`의 DB 조회 전환, 카테고리 DB화 (D-024).
 - **2026-10-14 (5)**: SEO(metadata·canonical·OG 이미지·sitemap·robots·JSON-LD), not-found, error 경계 추가. `SiteShell` 분리 (D-021).
 - **2026-10-14 (4)**: 경력기술서 기반으로 `content/profile.ts`를 채우고 About·Career·Resume·Contact 라우트, Velog·Notion 링크를 추가했다 (D-020).
 - **2026-10-14 (3)**: Markdown 파이프라인, `lib/content`, Blog·Projects 라우트 추가 (D-019).

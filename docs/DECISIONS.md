@@ -183,3 +183,15 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **Category 삭제: SetNull** — 글은 남기고 미분류로 둔다. 글이 사라지는 일이 없다.
 - **버전**: Prisma, Auth.js, Zod 버전은 설치 시점에 registry에서 확인해 고정하고 이 항목에 기록한다.
 - **날짜**: 2026-10-14
+
+## D-024. 파일 콘텐츠를 DB로 전환하는 방식
+
+- **버전**: Prisma 7.10.0 고정. npm `latest` 태그가 RC(8.0.0-rc.22)여서 안정 버전(`prev` 태그)을 썼다. `@prisma/adapter-pg` 7.10.0, `pg` 8.23.1. Prisma 7은 datasource URL을 `schema.prisma`가 아니라 `prisma.config.ts`에 두고 `.env`를 직접 읽지 않아, config에서 `process.loadEnvFile(".env.local")`로 읽는다. pnpm 12의 빌드 스크립트 차단 때문에 `pnpm-workspace.yaml`의 `allowBuilds`에 prisma, @prisma/engines, esbuild를 허용했다.
+- **접속 두 가지**: 앱은 pooled `DATABASE_URL`, migration·seed는 direct `DATABASE_URL_UNPOOLED`. 서버리스에서는 pooler 없이 연결하면 연결 수가 부족해질 수 있고, migration은 pooler(PgBouncer)와 맞지 않는다.
+- **로컬은 Neon dev branch**: `.env.local`은 프로덕션과 분리된 dev branch를 가리킨다. migration·seed 실험이 프로덕션 데이터에 닿지 않는다.
+- **seed는 덮어쓰지 않는다**: slug·email이 이미 있으면 건너뛴다. Admin에서 수정한 내용을 파일이 되돌리지 못하게 하기 위해서다. 그래서 seed 후 파일을 고쳐도 DB에는 반영되지 않는다 (파일은 최초 이전용 원본이다).
+- **카테고리는 데이터**: 고정 목록(`POST_CATEGORIES`) 의존을 없애고 `Category` 테이블에서 읽는다 (`PostMeta.category`는 `{slug, name} | null`, null은 삭제된 카테고리의 미분류 글). 시드용 목록은 `post-file.ts`에만 남겼다. Blog 필터는 **게시된 글이 있는 카테고리만** 보여준다. 이전에는 빈 카테고리도 보이고 "글이 없습니다"를 안내했다. 빈 카테고리를 눌러 빈 목록을 보는 경험을 없애기 위한 변경이다 (빈 카테고리를 직접 URL로 열면 전체 목록으로 돌아간다).
+- **날짜**: 프로젝트 기간은 `DATE`(해당 월 1일, UTC)로 저장하고 `lib/content`에서 `YYYY-MM`으로 되돌린다.
+- **마이그레이션 적용 방식**: Vercel 빌드에서 `prisma migrate deploy`를 자동 실행하지 않는다. Preview와 Production이 같은 DB 환경 변수를 쓰고 있어서, Preview 빌드가 프로덕션 DB를 바꿀 수 있기 때문이다. 스키마 변경은 `pnpm db:deploy`를 프로덕션 접속 정보로 수동 실행한 뒤 push한다. Preview용 DB를 분리하면 자동화를 재검토한다.
+- **검증**: dev DB에 seed 후 `next build`한 정적 페이지 7개의 `<main>` 내용이 파일 기반으로 배포된 프로덕션과 글자 수까지 동일함을 확인했다. `/blog`(필터 포함)와 없는 slug의 404는 로컬 서버에서 확인했다.
+- **날짜**: 2026-10-15

@@ -1,21 +1,19 @@
-// Field names mirror the Phase 2 data model (CLAUDE.md §7) so moving to a DB only changes lib/content internals.
+// Shapes the pages consume. They mirror the Phase 2 data model (CLAUDE.md §7), so pages do not know
+// whether the data came from files or the database.
 import type { TocItem } from "@/lib/markdown/toc";
 
 export type ContentStatus = "DRAFT" | "PUBLISHED";
 
-export const POST_CATEGORIES = [
-  { slug: "frontend", name: "Frontend" },
-  { slug: "css", name: "CSS" },
-  { slug: "web", name: "Web" },
-  { slug: "study", name: "Study" },
-] as const;
-
-export type PostCategorySlug = (typeof POST_CATEGORIES)[number]["slug"];
+export type Category = {
+  slug: string;
+  name: string;
+};
 
 export type PostMeta = {
   title: string;
   slug: string;
-  category: PostCategorySlug;
+  /** null = uncategorized (its category was deleted). */
+  category: Category | null;
   excerpt: string;
   /** ISO date, YYYY-MM-DD */
   publishedAt: string;

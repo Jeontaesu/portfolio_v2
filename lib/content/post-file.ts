@@ -5,14 +5,24 @@ import path from "node:path";
 
 import matter from "gray-matter";
 
-import { POST_CATEGORIES, type ContentStatus, type PostCategorySlug, type PostMeta } from "./types";
+import type { ContentStatus, PostMeta } from "./types";
+
+// Categories the files may use. The seed script creates these rows; after that the database is the source of truth.
+export const POST_CATEGORIES = [
+  { slug: "frontend", name: "Frontend" },
+  { slug: "css", name: "CSS" },
+  { slug: "web", name: "Web" },
+  { slug: "study", name: "Study" },
+] as const;
 
 const POSTS_DIR = path.join(process.cwd(), "content", "posts");
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const CHARS_PER_MINUTE = 500;
 
-export type PostFile = { meta: PostMeta; body: string };
+/** A post as written in a file: the category is a slug here, resolved to a row by the seed. */
+export type PostFileMeta = Omit<PostMeta, "category"> & { category: string };
+export type PostFile = { meta: PostFileMeta; body: string };
 
 function fail(file: string, message: string): never {
   throw new Error(`[content/posts/${file}] ${message}`);
@@ -55,7 +65,7 @@ function parsePost(file: string, raw: string): PostFile {
     meta: {
       title: requireString(data, "title", file),
       slug,
-      category: category as PostCategorySlug,
+      category,
       excerpt: requireString(data, "excerpt", file),
       publishedAt: rawDate,
       status: status as ContentStatus,

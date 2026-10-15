@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { MarkdownContent } from "@/components/ui/markdown-content";
-import { categoryName } from "@/components/features/blog/post-list-item";
+import { UNCATEGORIZED_LABEL } from "@/components/features/blog/post-list-item";
 import { TableOfContents } from "@/components/features/blog/table-of-contents";
 import { getPost, getPosts } from "@/lib/content/posts";
 import { jsonLd, pageMetadata } from "@/lib/seo/metadata";
@@ -58,7 +58,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
       </Link>
       <header className="mt-6 flex max-w-3xl flex-col gap-4">
         <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
-          {categoryName(post.category)}
+          {post.category?.name ?? UNCATEGORIZED_LABEL}
         </p>
         <h1 className="text-h1">{post.title}</h1>
         <p className="text-body-sm text-secondary">

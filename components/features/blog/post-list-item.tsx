@@ -1,18 +1,17 @@
 import Link from "next/link";
 
-import { POST_CATEGORIES, type PostMeta } from "@/lib/content/types";
+import type { PostMeta } from "@/lib/content/types";
 import { formatDate } from "@/lib/utils/format-date";
 
-export function categoryName(slug: PostMeta["category"]): string {
-  return POST_CATEGORIES.find((c) => c.slug === slug)?.name ?? slug;
-}
+/** Shown when a post has no category (its category was deleted). */
+export const UNCATEGORIZED_LABEL = "Uncategorized";
 
 /** Editorial list row (not a card): meta line, title, excerpt. */
 export function PostListItem({ post }: { post: PostMeta }) {
   return (
     <li className="border-t border-border py-8">
       <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
-        {categoryName(post.category)} ·{" "}
+        {post.category?.name ?? UNCATEGORIZED_LABEL} ·{" "}
         <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> ·{" "}
         {post.readingMinutes} min read
       </p>
