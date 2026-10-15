@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileText, LayoutDashboard } from "lucide-react";
+import { FileText, FolderKanban, LayoutDashboard, Tag } from "lucide-react";
 
 import { cn } from "@/lib/utils/cn";
 
@@ -10,6 +10,8 @@ import { cn } from "@/lib/utils/cn";
 const ADMIN_NAV_ITEMS = [
   { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/posts", label: "Posts", icon: FileText },
+  { href: "/admin/projects", label: "Projects", icon: FolderKanban },
+  { href: "/admin/categories", label: "Categories", icon: Tag },
 ] as const;
 
 /** Sidebar list. aria-current marks the page; the filled background is the non-color-only visual cue. */

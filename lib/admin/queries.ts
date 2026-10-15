@@ -159,3 +159,89 @@ export async function getCategoryOptions(): Promise<{ id: string; name: string }
   await requireAdmin();
   return db.category.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } });
 }
+
+export type AdminCategoryRow = { id: string; name: string; slug: string; postCount: number };
+
+export async function getCategoriesWithCounts(): Promise<AdminCategoryRow[]> {
+  await requireAdmin();
+  const rows = await db.category.findMany({
+    orderBy: { name: "asc" },
+    select: { id: true, name: true, slug: true, _count: { select: { posts: true } } },
+  });
+  return rows.map(({ _count, ...row }) => ({ ...row, postCount: _count.posts }));
+}
+
+export async function getAdminCategory(
+  id: string,
+): Promise<{ id: string; name: string; slug: string; postCount: number } | null> {
+  await requireAdmin();
+  const row = await db.category.findUnique({
+    where: { id },
+    select: { id: true, name: true, slug: true, _count: { select: { posts: true } } },
+  });
+  if (!row) return null;
+  const { _count, ...rest } = row;
+  return { ...rest, postCount: _count.posts };
+}
+
+export type AdminProjectRow = {
+  id: string;
+  title: string;
+  slug: string;
+  status: StatusFilter;
+  featured: boolean;
+  sortOrder: number;
+};
+
+/** In public display order, so the list shows exactly what move up / down changes. */
+export async function getAdminProjects(): Promise<AdminProjectRow[]> {
+  await requireAdmin();
+  return db.project.findMany({
+    orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+    select: { id: true, title: true, slug: true, status: true, featured: true, sortOrder: true },
+  });
+}
+
+export type AdminProjectDetail = {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  content: string;
+  thumbnail: string | null;
+  thumbnailAlt: string | null;
+  thumbnailFit: "COVER" | "CONTAIN";
+  techStack: string[];
+  role: string;
+  /** YYYY-MM for <input type="month"> */
+  startedAt: string;
+  endedAt: string;
+  githubUrl: string | null;
+  demoUrl: string | null;
+  featured: boolean;
+  status: StatusFilter;
+};
+
+export async function getAdminProject(id: string): Promise<AdminProjectDetail | null> {
+  await requireAdmin();
+  const row = await db.project.findUnique({ where: { id } });
+  if (!row) return null;
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    summary: row.summary,
+    content: row.content,
+    thumbnail: row.thumbnail,
+    thumbnailAlt: row.thumbnailAlt,
+    thumbnailFit: row.thumbnailFit,
+    techStack: row.techStack,
+    role: row.role,
+    startedAt: row.startedAt?.toISOString().slice(0, 7) ?? "",
+    endedAt: row.endedAt?.toISOString().slice(0, 7) ?? "",
+    githubUrl: row.githubUrl,
+    demoUrl: row.demoUrl,
+    featured: row.featured,
+    status: row.status,
+  };
+}
