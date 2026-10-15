@@ -1,7 +1,7 @@
 # ARCHITECTURE.md
 
 구현 구조 문서. 규칙·디렉터리 책임의 기준은 `CLAUDE.md §5`, 이 문서는 실제 구현이 생길 때마다 갱신한다.
-현재 단계: Phase 2 진행 중 (Week 4: DB 연동). Public 사이트는 Phase 1로 배포 완료. 마지막 갱신: 2026-10-15.
+현재 단계: Phase 2 진행 중 (Week 4 DB 연동 완료, Week 5 인증 구현). Public 사이트는 Phase 1로 배포 완료. 마지막 갱신: 2026-10-15.
 
 각 항목은 **구현됨** / **설계만 있음**으로 구분한다.
 
@@ -33,14 +33,27 @@ app/(site)/   ← Server Component 기본, 빌드 시 정적 생성 (/blog 만 �
 | `/` | 구현됨 (모든 섹션이 실제 데이터에 연결됨) |
 | `/blog` (`?category=`), `/blog/[slug]` | 구현됨 |
 | `/projects`, `/projects/[slug]` | 구현됨 |
+| `/admin/login`, `/admin/dashboard`(자리 표시) | 구현됨 (GitHub 로그인, 관리자 확인. Dashboard 내용은 Week 6) |
 | `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF와 Email은 값이 없어 숨김/안내 상태) |
 
 SEO 파일: `app/sitemap.ts`, `app/robots.ts`, `app/opengraph-image.tsx`, `blog/[slug]`·`projects/[slug]`의 `opengraph-image.tsx`, `app/not-found.tsx`, `app/(site)/error.tsx`. 페이지 metadata는 `lib/seo/metadata.ts`의 `pageMetadata()`로 title·description·canonical·Open Graph를 함께 만든다 (D-021).
 
+## 2-1. 인증 구조 (Week 5)
+
+```text
+lib/auth/config.ts   NextAuth: GitHub 하나, JWT 세션, signIn 콜백이 DB의 ADMIN 허용 목록 확인
+lib/auth/admin.ts    findAdminByEmail / findAdminById (User.role = ADMIN)
+lib/auth/guard.ts    getAdmin() (null 가능), requireAdmin() (없으면 /admin/login으로 redirect)
+app/api/auth/[...nextauth]/route.ts   Auth.js 핸들러
+```
+
+- 변수: `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` (Production은 Vercel, 로컬은 `.env.local`에 별도 OAuth App).
+- 세션 JWT는 힌트이고 권한은 요청마다 DB로 확인한다. 보호할 Server Action·Route Handler는 첫 줄에서 `requireAdmin()`을 호출한다.
+
 ## 3. 렌더링 경계
 
 - 기본은 Server Component. `"use client"`는 상호작용이 필요한 말단 컴포넌트에만 둔다.
-- 현재 Client Component는 3개다 (`(site)/error.tsx`는 Next 요구사항).
+- 현재 Client Component는 3개다 (Admin 로그인·로그아웃은 Server Action이라 추가 없음) (`(site)/error.tsx`는 Next 요구사항).
   - `components/layout/mobile-nav.tsx` — Radix Dialog 상태 (열림/닫힘).
   - `components/layout/nav-link.tsx` — `usePathname()`으로 `aria-current` 계산.
 - 반응형은 CSS로 처리하고 viewport JS 감지는 쓰지 않는다. 헤더는 `md`(768px)에서 데스크톱 메뉴와 모바일 메뉴를 CSS(`hidden md:block` / `md:hidden`)로 전환한다.
@@ -57,7 +70,10 @@ app/layout.tsx            <html lang="ko">, Pretendard(next/font/local), <body> 
 
 - `<main>`은 `tabIndex={-1}`로 SkipLink의 이동 대상이 된다 (`outline-none`).
 - Home 섹션은 `app/(site)/_components/`에 둔다 (Home 전용이라 라우트 가까이에 위치). 현재: `hero`, `selected-works`, `about`, `career`, `blog-preview`, `contact`, `section-header`.
-- Admin은 Phase 2에서 `app/admin/`에 별도 레이아웃으로 추가한다 (Public과 레이아웃 공유 안 함).
+- Admin은 `app/admin/`에 별도 레이아웃이다 (Public과 레이아웃 공유 안 함, primitive와 SkipLink만 공유).
+  - `app/admin/layout.tsx`: `noindex` metadata만.
+  - `app/admin/login/`: 보호 영역 밖.
+  - `app/admin/(protected)/layout.tsx`: `requireAdmin()` 후 헤더·로그아웃. 각 페이지도 `requireAdmin()`을 다시 호출한다 (D-025).
 
 ## 5. 컴포넌트 구조
 
@@ -99,7 +115,7 @@ components/
 | DB | PostgreSQL(Neon). Prisma 7.10.0 (`prisma-client` generator, `@prisma/adapter-pg`). 생성된 클라이언트는 `lib/db/generated`(git 제외, `postinstall`에서 생성). 런타임은 pooled `DATABASE_URL`, migration·seed는 `DATABASE_URL_UNPOOLED` |
 | 설치된 UI 의존성 | `@radix-ui/react-dialog`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, `clsx`, `tailwind-merge` |
 
-DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용만), `db:seed`, `db:studio`. 인증 패키지(Auth.js)는 Week 5에 설치한다. Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-only`)은 정확한 버전으로 고정해 설치했다. 
+DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용만), `db:seed`, `db:studio`. 인증은 `next-auth` 5.0.0-beta.32 (D-025). Markdown 의존성(`gray-matter`, `unified` 계열, `shiki`, `vfile`, `server-only`)은 정확한 버전으로 고정해 설치했다. 
 
 ## 8. 배포
 
@@ -112,6 +128,7 @@ DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-15 (2)**: Auth.js v5 + GitHub 로그인, `requireAdmin()` 가드, `/admin/login`·보호된 Admin 레이아웃·Dashboard 자리 표시, robots에서 `/admin` 차단 (D-025).
 - **2026-10-15**: Prisma schema·init migration, DB 클라이언트, seed, `lib/content/`의 DB 조회 전환, 카테고리 DB화 (D-024).
 - **2026-10-14 (5)**: SEO(metadata·canonical·OG 이미지·sitemap·robots·JSON-LD), not-found, error 경계 추가. `SiteShell` 분리 (D-021).
 - **2026-10-14 (4)**: 경력기술서 기반으로 `content/profile.ts`를 채우고 About·Career·Resume·Contact 라우트, Velog·Notion 링크를 추가했다 (D-020).
