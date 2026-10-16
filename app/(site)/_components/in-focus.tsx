@@ -21,6 +21,7 @@ export async function InFocus() {
               src={project.thumbnail}
               alt={project.thumbnailAlt ?? ""}
               fill
+              priority
               sizes="(min-width: 1024px) 60vw, 100vw"
               className={cn(
                 "transition-transform duration-500 ease-out group-hover:scale-[1.03]",
