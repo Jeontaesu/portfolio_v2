@@ -229,3 +229,53 @@
     text-align: left;
   }
 }
+
+/*
+ * Scroll-driven motion (CSS only, no JS). Everything is gated twice:
+ *  - prefers-reduced-motion: no-preference — people who ask for less motion get none of it;
+ *  - @supports (animation-timeline: view()) — browsers without it (Firefox) simply show the content.
+ * Content is never hidden by default, so a failed gate cannot leave a blank page.
+ */
+.scroll-progress {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Fades and rises into place as the element enters the viewport. Elements already on screen at load
+       start at their final state, so nothing flashes. */
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 35%;
+    }
+
+    /* Reading progress bar on blog posts: grows with the page scroll. */
+    .scroll-progress {
+      display: block;
+      transform-origin: left;
+      animation: scroll-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes scroll-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}

@@ -4,7 +4,7 @@ import { ProfileLinks } from "@/components/layout/profile-links";
 export function Contact() {
   return (
     <section aria-labelledby="contact-title" className="border-y border-border bg-surface">
-      <div className="container-page grid gap-10 py-16 lg:grid-cols-12 lg:gap-6 lg:py-24">
+      <div className="reveal container-page grid gap-10 py-16 lg:grid-cols-12 lg:gap-6 lg:py-24">
         <div className="lg:col-span-6">
           <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
             Let&apos;s work together

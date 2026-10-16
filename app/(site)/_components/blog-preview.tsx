@@ -37,7 +37,7 @@ export async function BlogPreview() {
           </div>
           <ul className="mt-10 grid gap-x-6 gap-y-12 md:grid-cols-2">
             {posts.map((post) => (
-              <li key={post.slug} className="border-t border-border pt-6">
+              <li key={post.slug} className="reveal border-t border-border pt-6">
                 <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
                   {post.category?.name ?? UNCATEGORIZED_LABEL} ·{" "}
                   <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> ·{" "}

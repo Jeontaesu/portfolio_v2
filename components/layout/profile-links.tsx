@@ -15,7 +15,12 @@ export function ProfileLinks({ className, variant = "inline" }: ProfileLinksProp
   const { github, velog, notion, email } = profile.links;
   const rows = variant === "rows";
   const itemClass = rows ? "border-b border-border first:border-t" : undefined;
-  const linkClass = cn("min-h-11", rows && "w-full justify-between py-2");
+  // Rows: the ↗ icon nudges toward its corner and the text turns primary on hover (CSS only).
+  const linkClass = cn(
+    "min-h-11",
+    rows &&
+      "group w-full justify-between py-2 transition-colors hover:text-primary [&_svg]:transition-transform hover:[&_svg]:-translate-y-0.5 hover:[&_svg]:translate-x-0.5",
+  );
 
   return (
     <ul

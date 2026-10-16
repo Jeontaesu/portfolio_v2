@@ -226,3 +226,24 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **저장하지 않은 변경 경고는 `beforeunload`만**: 탭 닫기·새로고침은 막지만 앱 안의 링크 이동은 막지 못한다. 에디터 안에는 앱 내 링크가 없어 현재는 충분하다.
 - **날짜**: 2026-10-15
 
+## D-027. 공개 사이트 UI 개편: 시안의 구조만 반영, 토큰은 유지
+
+- **배경**: Figma 시안(Home, 이미지로 전달)으로 전체 UI를 바꾸고 싶다는 요청. Toss Design System(TDS Mobile)도 검토했다.
+- **TDS는 적용하지 않았다**: `DESIGN.md`는 공개 페이지에서 관찰한 값을 모은 참고 문서였고, 모바일 앱용이라 Table·Sidebar·Dialog·데스크톱 레이아웃이 없다. Toss Product Sans는 재배포 권리가 확인되지 않는다. 대비를 계산하니 Primary `#3182f6`은 3.71:1, Muted `#8b95a1`은 3.04:1로 AA(4.5:1)에 못 미쳤다. 접근성이 이 프로젝트의 차별점이라 채택하지 않았다. 사용자가 최종 결정.
+- **시안에서는 구조만 가져왔다**: 색은 시안이 아니라 `PORTFOLIO_DESIGN.md §2` 토큰을 그대로 썼다 (사용자 지시). 베이지 밴드는 `bg-surface`, 어두운 패널은 `bg-foreground`로 대체했고 새 색 토큰은 만들지 않았다.
+- **Home 흐름 변경**: `Hero → In Focus → Selected Works → Blog Preview → About(+Toolkit) → Career → Contact`. Blog가 About 앞으로 왔다. 헤더는 `md` 이상에서 2단이고(높이 때문에 데스크톱 sticky 해제), 푸터는 메뉴 링크를 포함하도록 확장했다.
+- **하위 페이지**는 공통 `PageHeader`(overline + 제목 + 우측 설명 + 굵은 구분선)로 Home과 같은 모양을 쓴다. 한 곳에서 바꾸면 6개 페이지가 함께 바뀐다.
+- **만들지 않은 것**: About 책상 사진(에셋 없음), "관심 있는 주제부터" 섹션(콘텐츠 미정), 블로그 일러스트 썸네일(데이터 없음), 헤더 검색(기능 범위 밖). 시안의 문구·경력·수치는 `profile.ts`와 DB에서 읽고, 시안 값을 새로 쓰지 않았다.
+- **부작용**: `ProfileLinks`의 순서가 Email 먼저로 바뀌어 `/contact`에도 반영된다.
+- **검증**: `typecheck`, `lint`, `pnpm build` 통과. 화면은 개발 서버에서 직접 확인하는 단계가 남아 있다 (390 / 768 / 1440).
+- **날짜**: 2026-10-17
+
+## D-028. 모션: CSS만 쓰고, 스크롤 효과는 scroll-driven animation으로
+
+- **원칙**: 기본은 CSS(`transition`/`@keyframes`). `framer-motion`은 드래그, stagger orchestration, layout animation, exit(`AnimatePresence`)처럼 JS 상태 추적이 필요한 경우에만 예외로 쓴다 (`CLAUDE.md §6 애니메이션`). 이번 작업은 모두 CSS로 충분해 의존성을 추가하지 않았다.
+- **스크롤 등장(`.reveal`)과 읽기 진행바(`.scroll-progress`)**: JS `IntersectionObserver` 대신 `animation-timeline: view()` / `scroll(root)`를 썼다. JS·hydration 이슈가 없고 컴포지터에서 처리된다. trade-off: Firefox는 아직 지원하지 않아 그 브라우저에서는 효과 없이 정적으로 보인다.
+- **두 겹의 게이트**: `prefers-reduced-motion: no-preference`와 `@supports (animation-timeline: view())`를 모두 만족할 때만 켠다. 콘텐츠는 기본 상태에서 숨기지 않으므로 게이트가 실패해도 빈 화면이 되지 않는다. 진행바는 기본 `display: none`이다. 빌드된 CSS에서 두 조건이 유지되는 것을 확인했다.
+- **hover**: 프로젝트·In Focus 이미지 확대(1.03, 500ms), "→" 이동, 연락처 행의 ↗ 이동과 색 전환. 클릭할 수 없는 요소(Career 행)에는 hover 효과를 두지 않았다. 링크로 오해하기 때문이다.
+- **범위 밖**: Admin은 장식 모션을 넣지 않았다.
+- **검증**: `typecheck`, `lint`, `pnpm build` 통과. 실제 움직임은 브라우저에서 확인하는 단계가 남아 있다 (Chrome 계열, `prefers-reduced-motion` 켠 상태 포함).
+- **날짜**: 2026-10-17

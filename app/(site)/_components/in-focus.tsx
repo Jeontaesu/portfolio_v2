@@ -14,7 +14,7 @@ export async function InFocus() {
       <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
         In Focus · 대표 프로젝트
       </p>
-      <div className="mt-4 grid overflow-hidden lg:grid-cols-5">
+      <div className="reveal group mt-4 grid overflow-hidden lg:grid-cols-5">
         <div className="relative min-h-64 border border-border bg-surface lg:col-span-3 lg:min-h-96">
           {project.thumbnail && (
             <Image
@@ -23,6 +23,7 @@ export async function InFocus() {
               fill
               sizes="(min-width: 1024px) 60vw, 100vw"
               className={cn(
+                "transition-transform duration-500 ease-out group-hover:scale-[1.03]",
                 project.thumbnailFit === "contain" ? "object-contain p-10 lg:p-16" : "object-cover",
               )}
             />
@@ -41,7 +42,13 @@ export async function InFocus() {
             href={`/projects/${project.slug}`}
             className="inline-flex min-h-11 items-center text-body-sm font-semibold underline underline-offset-4 focus-visible:outline-background"
           >
-            케이스 스터디 읽기<span aria-hidden="true">&nbsp;→</span>
+            케이스 스터디 읽기
+            <span
+              aria-hidden="true"
+              className="inline-block transition-transform duration-200 group-hover:translate-x-1"
+            >
+              &nbsp;→
+            </span>
           </Link>
         </div>
       </div>

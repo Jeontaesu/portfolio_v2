@@ -16,7 +16,7 @@ export function NavLink({ href, className, children, ...props }: NavLinkProps) {
       href={href}
       aria-current={isCurrent ? "page" : undefined}
       className={cn(
-        "decoration-2 underline-offset-8 hover:underline",
+        "decoration-2 underline-offset-8 transition-colors hover:underline",
         isCurrent ? "text-foreground underline" : "text-secondary hover:text-foreground",
         className,
       )}

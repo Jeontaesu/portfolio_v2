@@ -175,11 +175,20 @@ docs/
 - Mobile-first. 기준 폭 390px / Desktop 컨테이너·breakpoint는 디자인 문서 기준.
 - 내부 여백 `padding`, 자식 간격 `gap`, 예외적 외부 간격만 `margin`.
 - 토큰 외 색상을 새로 만들지 않는다. 상태 텍스트는 `*-text` 토큰을 쓴다 (대비 기준).
-- 애니메이션은 CSS 우선, `prefers-reduced-motion` 대응. 애니메이션 라이브러리 추가 금지(복잡한 인터랙션 제외).
+- 애니메이션 규칙은 아래 「애니메이션」 참고.
 - 아이콘은 `lucide-react` 하나로 통일. 개별 import만 사용한다. 장식 아이콘은 `aria-hidden`, 의미 있으면 라벨 제공.
 - shadcn/ui 소스를 가져올 때 색상 토큰 이름을 매핑한다: 이 프로젝트의 `--secondary`는 **보조 텍스트 색**이며 shadcn의 secondary(배경색)와 의미가 다르다. 가져온 코드의 `bg-secondary`·`text-secondary-foreground` 등을 그대로 쓰지 말고 `docs/PORTFOLIO_DESIGN.md` 토큰에 맞게 고친다.
 - 타이포 Mobile 값은 `lg` 미만에 적용되므로 태블릿(768–1023px)은 레이아웃은 8열, 글자 크기는 Mobile 값이다 (의도된 동작).
 - Input 등 식별이 필요한 경계선은 `--muted`(#6B7280, 흰 배경 대비 4.83)를 쓴다. `--border`(대비 1.24)는 장식용이다. 새 색 토큰은 만들지 않는다 (D-026).
+
+### 애니메이션
+
+- **기본은 CSS**(`transition`/`@keyframes`)로 처리한다. hover/focus 상태 전환, 단순 fade/slide 등 대부분의 UI 애니메이션은 CSS만으로 충분하다.
+- **`framer-motion`은 CSS로 구현하기 번거롭거나 불가능한 복잡한 애니메이션에만** 예외적으로 쓴다. 예: 제스처 기반 인터랙션(드래그), 여러 요소가 순서를 두고 이어지는 orchestration(stagger), 레이아웃 변경에 따른 자동 애니메이션(layout animation), 컴포넌트 마운트/언마운트 시 exit 애니메이션(`AnimatePresence`) 등 JS로 상태를 추적해야 하는 경우.
+- 이유: CSS 애니메이션은 별도 JS 번들 없이 브라우저 컴포지터에서 처리돼 가볍고, 대부분의 케이스를 커버한다. `framer-motion`은 강력하지만 번들 사이즈와 런타임 비용이 있으므로 정말 필요한 곳에만 쓴다.
+- 모든 모션은 `prefers-reduced-motion: no-preference`일 때만 켠다. 콘텐츠를 기본 상태에서 숨기지 않는다 (모션이 꺼지거나 미지원이어도 내용이 보여야 한다).
+- 스크롤 인터랙션은 CSS scroll-driven animation(`animation-timeline`)을 `@supports`로 감싸 쓴다 (`.reveal`, `.scroll-progress`, `globals.css`). 지원하지 않는 브라우저는 효과 없이 정적으로 보인다.
+- 클릭할 수 없는 요소에는 hover 효과를 주지 않는다 (링크로 오해). Admin에는 장식 모션을 넣지 않는다.
 
 ### 접근성 (Public·Admin 동일 기준)
 - Semantic HTML (`header`, `nav`, `main`, `article`, `section`, 목록 요소).

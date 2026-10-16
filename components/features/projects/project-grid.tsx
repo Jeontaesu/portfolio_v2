@@ -29,7 +29,7 @@ export function ProjectGrid({
       )}
     >
       {projects.map((project, index) => (
-        <li key={project.slug} className={cn(!equal && SPANS[index % SPANS.length])}>
+        <li key={project.slug} className={cn("reveal", !equal && SPANS[index % SPANS.length])}>
           <Link href={`/projects/${project.slug}`} className="group block">
             <div className="relative aspect-[4/3] overflow-hidden border border-border bg-surface">
               {project.thumbnail && (
@@ -39,6 +39,7 @@ export function ProjectGrid({
                   fill
                   sizes={equal ? "(min-width: 1024px) 33vw, 100vw" : "(min-width: 1024px) 66vw, 100vw"}
                   className={cn(
+                    "transition-transform duration-500 ease-out group-hover:scale-[1.03]",
                     project.thumbnailFit === "contain" ? "object-contain p-8" : "object-cover",
                   )}
                 />
@@ -53,7 +54,13 @@ export function ProjectGrid({
               {project.summary}
             </p>
             <span className="mt-3 inline-block text-body-sm font-semibold text-primary">
-              View Case Study<span aria-hidden="true"> →</span>
+              View Case Study
+              <span
+                aria-hidden="true"
+                className="inline-block transition-transform duration-200 group-hover:translate-x-1"
+              >
+                &nbsp;→
+              </span>
             </span>
           </Link>
         </li>

@@ -49,6 +49,11 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }}
       />
+      {/* Decorative reading-progress bar. Shown only where CSS scroll timelines work and motion is allowed. */}
+      <div
+        aria-hidden="true"
+        className="scroll-progress fixed inset-x-0 top-0 z-50 h-0.5 bg-primary"
+      />
       <Link
         href="/blog"
         className="inline-flex min-h-11 items-center gap-1 text-body-sm text-secondary hover:text-foreground"

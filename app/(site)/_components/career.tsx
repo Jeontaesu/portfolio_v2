@@ -29,7 +29,7 @@ export function Career() {
           {career.map((entry) => (
             <li
               key={entry.company}
-              className="grid gap-1 border-t border-border py-6 md:grid-cols-[11rem_1fr_auto] md:gap-6"
+              className="reveal grid gap-1 border-t border-border py-6 md:grid-cols-[11rem_1fr_auto] md:gap-6"
             >
               <p className="text-body-sm text-secondary">
                 {formatPeriod(entry.startedAt, entry.endedAt)}

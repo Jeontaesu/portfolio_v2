@@ -14,7 +14,7 @@ export function About() {
         aria-labelledby="about-title"
         className="container-page border-t border-foreground py-16 lg:py-24"
       >
-        <div className="grid gap-10 lg:grid-cols-12 lg:gap-6">
+        <div className="reveal grid gap-10 lg:grid-cols-12 lg:gap-6">
           <SectionHeader
             id="about-title"
             overline="About Me · MEFLOWEB"
@@ -43,14 +43,14 @@ export function About() {
           title="쌓아온 기술, 넓혀가는 영역"
         />
         <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-6">
-          <div className="border-t border-border pt-6">
+          <div className="reveal border-t border-border pt-6">
             <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
               Web Publisher · 실무 사용
             </p>
             <p className="mt-3 text-h3">실무 경력 {profile.careerYears}년</p>
             <p className="mt-4 text-body-sm text-secondary">{working.join(" · ")}</p>
           </div>
-          <div className="border-t border-border pt-6">
+          <div className="reveal border-t border-border pt-6">
             <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
               Frontend Developer · 학습·적용 중
             </p>
