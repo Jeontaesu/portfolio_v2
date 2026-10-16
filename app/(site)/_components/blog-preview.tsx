@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Reveal } from "@/components/ui/reveal";
 import { CategoryFilter } from "@/components/features/blog/category-filter";
 import { UNCATEGORIZED_LABEL } from "@/components/features/blog/post-list-item";
 import { getPostCategories, getPosts } from "@/lib/content/posts";
@@ -36,8 +37,13 @@ export async function BlogPreview() {
             <CategoryFilter categories={categories} />
           </div>
           <ul className="mt-10 grid gap-x-6 gap-y-12 md:grid-cols-2">
-            {posts.map((post) => (
-              <li key={post.slug} className="reveal border-t border-border pt-6">
+            {posts.map((post, index) => (
+              <Reveal
+                as="li"
+                key={post.slug}
+                delay={index * 0.08}
+                className="border-t border-border pt-6"
+              >
                 <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
                   {post.category?.name ?? UNCATEGORIZED_LABEL} ·{" "}
                   <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time> ·{" "}
@@ -49,7 +55,7 @@ export async function BlogPreview() {
                   </Link>
                 </h3>
                 <p className="mt-3 line-clamp-3 text-body text-secondary">{post.excerpt}</p>
-              </li>
+              </Reveal>
             ))}
           </ul>
         </>

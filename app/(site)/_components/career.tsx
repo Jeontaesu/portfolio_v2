@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Reveal } from "@/components/ui/reveal";
 import { career } from "@/content/profile";
 import { formatPeriod } from "@/lib/utils/format-date";
 
@@ -26,10 +27,12 @@ export function Career() {
           </Link>
         </header>
         <ol className="border-b border-border lg:col-span-7 lg:col-start-6">
-          {career.map((entry) => (
-            <li
+          {career.map((entry, index) => (
+            <Reveal
+              as="li"
               key={entry.company}
-              className="reveal grid gap-1 border-t border-border py-6 md:grid-cols-[11rem_1fr_auto] md:gap-6"
+              delay={Math.min(index, 3) * 0.06}
+              className="grid gap-1 border-t border-border py-6 md:grid-cols-[11rem_1fr_auto] md:gap-6"
             >
               <p className="text-body-sm text-secondary">
                 {formatPeriod(entry.startedAt, entry.endedAt)}
@@ -42,7 +45,7 @@ export function Career() {
                 {entry.position}
                 {entry.employment && ` · ${entry.employment}`}
               </p>
-            </li>
+            </Reveal>
           ))}
         </ol>
       </div>

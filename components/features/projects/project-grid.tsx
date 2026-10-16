@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { Reveal } from "@/components/ui/reveal";
 import { cn } from "@/lib/utils/cn";
 import type { ProjectMeta } from "@/lib/content/types";
 
@@ -29,7 +30,12 @@ export function ProjectGrid({
       )}
     >
       {projects.map((project, index) => (
-        <li key={project.slug} className={cn("reveal", !equal && SPANS[index % SPANS.length])}>
+        <Reveal
+          as="li"
+          key={project.slug}
+          delay={(index % 3) * 0.08}
+          className={cn(!equal && SPANS[index % SPANS.length])}
+        >
           <Link href={`/projects/${project.slug}`} className="group block">
             <div className="relative aspect-[4/3] overflow-hidden border border-border bg-surface">
               {project.thumbnail && (
@@ -63,7 +69,7 @@ export function ProjectGrid({
               </span>
             </span>
           </Link>
-        </li>
+        </Reveal>
       ))}
     </ul>
   );

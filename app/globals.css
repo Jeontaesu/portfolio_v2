@@ -231,26 +231,18 @@
 }
 
 /*
- * Scroll-driven motion (CSS only, no JS). Everything is gated twice:
+ * Motion. Reveal-on-scroll and the menu exit animations use `motion` (components/ui/reveal.tsx, mobile menus).
+ * The reading-progress bar stays CSS: a scroll timeline needs no JS. It is gated twice:
  *  - prefers-reduced-motion: no-preference — people who ask for less motion get none of it;
- *  - @supports (animation-timeline: view()) — browsers without it (Firefox) simply show the content.
- * Content is never hidden by default, so a failed gate cannot leave a blank page.
+ *  - @supports (animation-timeline: scroll()) — browsers without it simply do not show the bar.
+ * Content is never hidden by CSS, so a failed gate cannot leave a blank page.
  */
 .scroll-progress {
   display: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    /* Fades and rises into place as the element enters the viewport. Elements already on screen at load
-       start at their final state, so nothing flashes. */
-    .reveal {
-      animation: reveal-up linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 35%;
-    }
-
-    /* Reading progress bar on blog posts: grows with the page scroll. */
+  @supports (animation-timeline: scroll()) {
     .scroll-progress {
       display: block;
       transform-origin: left;
@@ -260,14 +252,11 @@
   }
 }
 
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+/* Reveal elements render at opacity 0 and are animated in by JS. With reduced motion, show them at once. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

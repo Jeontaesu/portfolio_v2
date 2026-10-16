@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Reveal } from "@/components/ui/reveal";
 import { profile } from "@/content/profile";
 
 import { SectionHeader } from "./section-header";
@@ -14,7 +15,7 @@ export function About() {
         aria-labelledby="about-title"
         className="container-page border-t border-foreground py-16 lg:py-24"
       >
-        <div className="reveal grid gap-10 lg:grid-cols-12 lg:gap-6">
+        <Reveal className="grid gap-10 lg:grid-cols-12 lg:gap-6">
           <SectionHeader
             id="about-title"
             overline="About Me · MEFLOWEB"
@@ -33,7 +34,7 @@ export function About() {
               소개 더 읽기<span aria-hidden="true">&nbsp;→</span>
             </Link>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <section aria-labelledby="toolkit-title" className="container-page pb-16 lg:pb-24">
@@ -43,14 +44,14 @@ export function About() {
           title="쌓아온 기술, 넓혀가는 영역"
         />
         <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-6">
-          <div className="reveal border-t border-border pt-6">
+          <Reveal className="border-t border-border pt-6">
             <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
               Web Publisher · 실무 사용
             </p>
             <p className="mt-3 text-h3">실무 경력 {profile.careerYears}년</p>
             <p className="mt-4 text-body-sm text-secondary">{working.join(" · ")}</p>
-          </div>
-          <div className="reveal border-t border-border pt-6">
+          </Reveal>
+          <Reveal delay={0.08} className="border-t border-border pt-6">
             <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
               Frontend Developer · 학습·적용 중
             </p>
@@ -62,7 +63,7 @@ export function About() {
               UI를 이해하는 경험 위에 서비스를 만드는 기술을 더합니다. 배움과 적용의 과정은 기술
               블로그로 연결합니다.
             </p>
-          </div>
+          </Reveal>
         </div>
       </section>
     </>

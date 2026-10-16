@@ -14,7 +14,7 @@ export async function InFocus() {
       <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
         In Focus · 대표 프로젝트
       </p>
-      <div className="reveal group mt-4 grid overflow-hidden lg:grid-cols-5">
+      <div className="group mt-4 grid overflow-hidden lg:grid-cols-5">
         <div className="relative min-h-64 border border-border bg-surface lg:col-span-3 lg:min-h-96">
           {project.thumbnail && (
             <Image

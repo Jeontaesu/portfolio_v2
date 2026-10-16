@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { AdminMobileNav } from "@/components/layout/admin-mobile-nav";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
+import { MotionProvider } from "@/components/ui/motion-provider";
 import { SkipLink } from "@/components/layout/skip-link";
 import { signOut } from "@/lib/auth/config";
 import { requireAdmin } from "@/lib/auth/guard";
@@ -20,7 +21,7 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
   }
 
   return (
-    <>
+    <MotionProvider>
       <SkipLink />
       <div className="lg:grid lg:grid-cols-[240px_1fr]">
         <aside className="sticky top-0 hidden h-dvh border-r border-border bg-surface lg:block">
@@ -42,6 +43,6 @@ export default async function ProtectedAdminLayout({ children }: { children: Rea
           </main>
         </div>
       </div>
-    </>
+    </MotionProvider>
   );
 }

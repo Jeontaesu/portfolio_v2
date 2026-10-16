@@ -187,7 +187,9 @@ docs/
 - **`framer-motion`은 CSS로 구현하기 번거롭거나 불가능한 복잡한 애니메이션에만** 예외적으로 쓴다. 예: 제스처 기반 인터랙션(드래그), 여러 요소가 순서를 두고 이어지는 orchestration(stagger), 레이아웃 변경에 따른 자동 애니메이션(layout animation), 컴포넌트 마운트/언마운트 시 exit 애니메이션(`AnimatePresence`) 등 JS로 상태를 추적해야 하는 경우.
 - 이유: CSS 애니메이션은 별도 JS 번들 없이 브라우저 컴포지터에서 처리돼 가볍고, 대부분의 케이스를 커버한다. `framer-motion`은 강력하지만 번들 사이즈와 런타임 비용이 있으므로 정말 필요한 곳에만 쓴다.
 - 모든 모션은 `prefers-reduced-motion: no-preference`일 때만 켠다. 콘텐츠를 기본 상태에서 숨기지 않는다 (모션이 꺼지거나 미지원이어도 내용이 보여야 한다).
-- 스크롤 인터랙션은 CSS scroll-driven animation(`animation-timeline`)을 `@supports`로 감싸 쓴다 (`.reveal`, `.scroll-progress`, `globals.css`). 지원하지 않는 브라우저는 효과 없이 정적으로 보인다.
+- `motion`(패키지명 `motion`, import는 `motion/react`·`motion/react-m`)은 레이아웃마다 `MotionProvider`(`LazyMotion` + `m.*`, `strict`) 아래에서만 쓴다. 풀 `motion.*`은 쓰지 않는다 (번들).
+- 사용처: 메뉴·드로어의 exit 애니메이션(Radix `forceMount` + `AnimatePresence`)과 스크롤 reveal(`components/ui/reveal.tsx`, stagger는 `delay`). 읽기 진행바는 CSS(`.scroll-progress`).
+- `Reveal`은 서버 렌더가 `opacity:0`이라 **첫 화면에 보이는 콘텐츠(LCP)에는 쓰지 않는다.** reduced motion에서는 `globals.css`가 `[data-reveal]`을 강제로 보이게 한다.
 - 클릭할 수 없는 요소에는 hover 효과를 주지 않는다 (링크로 오해). Admin에는 장식 모션을 넣지 않는다.
 
 ### 접근성 (Public·Admin 동일 기준)

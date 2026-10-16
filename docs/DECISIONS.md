@@ -238,12 +238,15 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **검증**: `typecheck`, `lint`, `pnpm build` 통과. 화면은 개발 서버에서 직접 확인하는 단계가 남아 있다 (390 / 768 / 1440).
 - **날짜**: 2026-10-17
 
-## D-028. 모션: CSS만 쓰고, 스크롤 효과는 scroll-driven animation으로
+## D-028. 모션: CSS 우선, 메뉴 exit와 스크롤 reveal에는 `motion`
 
-- **원칙**: 기본은 CSS(`transition`/`@keyframes`). `framer-motion`은 드래그, stagger orchestration, layout animation, exit(`AnimatePresence`)처럼 JS 상태 추적이 필요한 경우에만 예외로 쓴다 (`CLAUDE.md §6 애니메이션`). 이번 작업은 모두 CSS로 충분해 의존성을 추가하지 않았다.
-- **스크롤 등장(`.reveal`)과 읽기 진행바(`.scroll-progress`)**: JS `IntersectionObserver` 대신 `animation-timeline: view()` / `scroll(root)`를 썼다. JS·hydration 이슈가 없고 컴포지터에서 처리된다. trade-off: Firefox는 아직 지원하지 않아 그 브라우저에서는 효과 없이 정적으로 보인다.
-- **두 겹의 게이트**: `prefers-reduced-motion: no-preference`와 `@supports (animation-timeline: view())`를 모두 만족할 때만 켠다. 콘텐츠는 기본 상태에서 숨기지 않으므로 게이트가 실패해도 빈 화면이 되지 않는다. 진행바는 기본 `display: none`이다. 빌드된 CSS에서 두 조건이 유지되는 것을 확인했다.
+- **원칙**: 기본은 CSS(`transition`/`@keyframes`). `motion`(framer-motion)은 드래그, stagger orchestration, layout animation, exit(`AnimatePresence`)처럼 JS 상태 추적이 필요한 경우에만 쓴다 (`CLAUDE.md §6 애니메이션`).
+- **1차 시도는 CSS였다**: 스크롤 등장을 `animation-timeline: view()`로 구현했지만 Firefox가 지원하지 않아 그 브라우저에서는 효과가 없었다. 이어서 사용자가 `motion`을 설치하고 메뉴 exit와 reveal을 요청해 아래로 바꿨다.
+- **메뉴 exit**: 공개 모바일 메뉴와 Admin 드로어를 Radix Dialog 그대로 두고 open 상태를 제어하며 `Overlay`·`Content`에 `forceMount`를 줘서 `AnimatePresence`가 exit 애니메이션이 끝날 때까지 마운트를 유지한다. 포커스 트랩·Esc·스크롤 잠금·포커스 복귀는 Radix가 계속 맡는다 (CLAUDE.md §1: Radix 동작을 직접 재구현하지 않는다).
+- **Reveal**: `whileInView`(한 번만, `once`)로 아래에서 올라오며 나타나고, 카드·목록은 `delay`로 순서를 둔다. Firefox를 포함해 동작한다. trade-off: 서버 렌더가 `opacity:0`이라 JS 없이는 보이지 않는다 → **첫 화면 콘텐츠(In Focus)에는 쓰지 않아** LCP를 지킨다.
+- **번들 관리**: `MotionProvider`(`LazyMotion` + `domAnimation`, `strict`)를 `SiteShell`과 Admin 보호 레이아웃에 한 번씩 두고 `m.*`만 쓴다. 풀 `motion.*`을 쓰면 `strict`가 에러를 낸다.
+- **reduced motion**: `MotionConfig reducedMotion="user"`가 이동(x/y)을 끄고, `[data-reveal]`은 CSS(`!important`)로 즉시 보이게 한다. 읽기 진행바는 CSS 스크롤 타임라인이고 `no-preference` + `@supports`로 이중 게이트한다.
 - **hover**: 프로젝트·In Focus 이미지 확대(1.03, 500ms), "→" 이동, 연락처 행의 ↗ 이동과 색 전환. 클릭할 수 없는 요소(Career 행)에는 hover 효과를 두지 않았다. 링크로 오해하기 때문이다.
 - **범위 밖**: Admin은 장식 모션을 넣지 않았다.
-- **검증**: `typecheck`, `lint`, `pnpm build` 통과. 실제 움직임은 브라우저에서 확인하는 단계가 남아 있다 (Chrome 계열, `prefers-reduced-motion` 켠 상태 포함).
+- **검증**: `typecheck`, `lint`, `pnpm build` 통과. 프로덕션 서버의 HTML에서 `data-reveal` 요소가 `opacity:0`으로 렌더되는 것을 확인했다. 실제 움직임(메뉴 exit, reveal, reduced motion)과 번들 크기 영향은 아직 브라우저에서 확인·측정하지 않았다.
 - **날짜**: 2026-10-17
