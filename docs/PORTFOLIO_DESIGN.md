@@ -181,6 +181,8 @@ Figma 컴포넌트 이름 = React 컴포넌트 이름. Figma variant 속성 = Re
 
 ### 5.1 Header
 
+> md 이상은 2단(위: 로고·태그라인·Resume / 아래: Home·Projects·Blog·About·Career, 우측 Contact). 높이가 커서 모바일에서만 sticky. 아래 도식은 이전 1단 구조.
+
 ```text
 ME FLOW                       Projects  Blog  About  Career  Contact
 ```
