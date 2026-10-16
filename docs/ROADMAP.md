@@ -127,9 +127,9 @@ Phase 2 주제 후보: 파일 → DB 이전, Server Action vs Route Handler, Aut
 ## 6. 산출물 체크
 
 **Phase 1 (11/1)**
-- [ ] 배포된 포트폴리오 URL
-- [ ] Case Study 3–4개
-- [ ] 블로그 글 2개
+- [x] 배포된 포트폴리오 URL
+- [x] Case Study 3–4개 (3개 게시)
+- [x] 블로그 글 2개
 - [ ] GitHub 공개 저장소 + README (소개, 스택, 로컬 실행, 배포 링크)
 - [ ] 이력서 PDF (포트폴리오 URL 포함)
 - [ ] Lighthouse 결과 캡처
@@ -137,7 +137,7 @@ Phase 2 주제 후보: 파일 → DB 이전, Server Action vs Route Handler, Aut
 **Phase 2**
 - [x] Admin CMS, Prisma schema + migration
 - [x] `docs/DECISIONS.md`
-- [ ] README 업데이트 (환경 변수, 아키텍처)
+- [x] README 업데이트 (환경 변수, 아키텍처)
 
 ---
 

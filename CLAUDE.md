@@ -4,7 +4,7 @@
 목적: 웹 퍼블리셔가 React / TypeScript / Next.js 기반 프론트엔드 개발자로 확장했음을 **코드와 실제 서비스로 증명**한다.
 우선순위: 기능의 양 < 구조, 화려함 < 완성도, 복잡함 < 명확함.
 
-**현재 단계: Phase 2 — Public 사이트(Phase 1)는 배포 완료, DB·인증·Admin CMS 구현 중.** 범위는 §8.
+**현재 단계: Phase 2 — Public 사이트(Phase 1)는 배포 완료, DB·인증·Admin CMS(글·프로젝트·카테고리 CRUD)까지 구현·배포 완료. 지금은 점검(접근성·성능·보안)과 문서 정리 단계.** 범위는 §8.
 
 관련 문서:
 - 디자인 기준 → `docs/PORTFOLIO_DESIGN.md` (UI 작업 시 반드시 읽음)
@@ -60,6 +60,7 @@
 | Validation (Phase 2) | Zod (폼·Server Action 공용 스키마). D-023 |
 | 이미지 저장 | P0: URL 또는 `public/` 정적 경로. 업로드(P1)는 외부 스토리지 필요 (Vercel 파일시스템은 영구 저장 안 됨) |
 | Font | Pretendard, `next/font/local` |
+| Animation | CSS 우선. 메뉴 exit·스크롤 reveal은 `motion`(`LazyMotion` + `m.*`). 규칙은 §6 「애니메이션」 |
 | Deploy | Vercel (GitHub 연동 자동 배포, D-018) + Neon PostgreSQL (Phase 2, D-023) |
 | Tooling | ESLint, Prettier, Git/GitHub. Storybook은 MVP 이후 판단 |
 
@@ -186,7 +187,7 @@ docs/
 - **기본은 CSS**(`transition`/`@keyframes`)로 처리한다. hover/focus 상태 전환, 단순 fade/slide 등 대부분의 UI 애니메이션은 CSS만으로 충분하다.
 - **`framer-motion`은 CSS로 구현하기 번거롭거나 불가능한 복잡한 애니메이션에만** 예외적으로 쓴다. 예: 제스처 기반 인터랙션(드래그), 여러 요소가 순서를 두고 이어지는 orchestration(stagger), 레이아웃 변경에 따른 자동 애니메이션(layout animation), 컴포넌트 마운트/언마운트 시 exit 애니메이션(`AnimatePresence`) 등 JS로 상태를 추적해야 하는 경우.
 - 이유: CSS 애니메이션은 별도 JS 번들 없이 브라우저 컴포지터에서 처리돼 가볍고, 대부분의 케이스를 커버한다. `framer-motion`은 강력하지만 번들 사이즈와 런타임 비용이 있으므로 정말 필요한 곳에만 쓴다.
-- 모든 모션은 `prefers-reduced-motion: no-preference`일 때만 켠다. 콘텐츠를 기본 상태에서 숨기지 않는다 (모션이 꺼지거나 미지원이어도 내용이 보여야 한다).
+- 모션은 `prefers-reduced-motion`을 존중한다 (CSS는 `no-preference`일 때만 켜고, `motion`은 `MotionConfig reducedMotion="user"`). CSS가 콘텐츠를 숨기는 일은 없어야 하고, JS로 숨기는 `Reveal`은 아래 제한을 지킨다.
 - `motion`(패키지명 `motion`, import는 `motion/react`·`motion/react-m`)은 레이아웃마다 `MotionProvider`(`LazyMotion` + `m.*`, `strict`) 아래에서만 쓴다. 풀 `motion.*`은 쓰지 않는다 (번들).
 - 사용처: 메뉴·드로어의 exit 애니메이션(Radix `forceMount` + `AnimatePresence`)과 스크롤 reveal(`components/ui/reveal.tsx`, stagger는 `delay`). 읽기 진행바는 CSS(`.scroll-progress`).
 - `Reveal`은 서버 렌더가 `opacity:0`이라 **첫 화면에 보이는 콘텐츠(LCP)에는 쓰지 않는다.** reduced motion에서는 `globals.css`가 `[data-reveal]`을 강제로 보이게 한다.

@@ -3,16 +3,17 @@
 웹 퍼블리셔로 11년간 일해 온 사람이 React · TypeScript · Next.js로 프론트엔드 개발까지 영역을 넓히고 있음을 **코드와 실제 서비스로 보여주기 위한** 포트폴리오 겸 기술 블로그입니다.
 
 - **사이트**: https://portfolio-v2-ashen-eight.vercel.app
-- **현재 단계**: Public 사이트(Phase 1)는 배포 완료. Phase 2로 PostgreSQL 연동과 관리자 로그인까지 끝냈고, Admin CMS(글·프로젝트 CRUD)를 만드는 중입니다.
+- **현재 단계**: Public 사이트(Phase 1)와 Phase 2(PostgreSQL, 관리자 로그인, Admin CMS)까지 배포 완료. 지금은 접근성·성능·보안 점검과 문서 정리 단계입니다.
 
 ## 주요 기능
 
-- **Home**: Hero → Selected Works → About → Career → Blog Preview → Contact
+- **Home**: Hero → In Focus → Selected Works → Blog Preview → About(+Toolkit) → Career → Contact (2단 헤더, 확장 푸터)
 - **Projects**: Case Study 목록과 상세(Overview → Context → Role → Action → Result), 이전/다음 프로젝트 이동
 - **Blog**: Markdown 글, 카테고리 필터(`?category=`), 목차, 코드 하이라이트
 - **About · Career · Resume · Contact**: 경력 데이터 한 곳(`content/profile.ts`)에서 렌더링
 - **SEO**: 페이지별 metadata·canonical·Open Graph, 빌드 시 생성하는 OG 이미지, sitemap, robots, JSON-LD
 - **Admin**: GitHub 로그인(Auth.js), DB의 ADMIN 허용 목록 확인, `noindex`인 보호 영역. Dashboard(실집계), 글·프로젝트·카테고리 CRUD, Draft/Publish, Markdown Write/Preview, 프로젝트 정렬.
+- **모션**: 대부분의 hover·전환은 CSS이고, `motion`은 메뉴 닫힘(exit) 애니메이션과 스크롤 reveal에만 씁니다. `prefers-reduced-motion`을 존중하고, 첫 화면 콘텐츠(LCP)에는 reveal을 쓰지 않습니다.
 - **접근성**: Skip link, 키보드로 쓸 수 있는 모바일 메뉴(Radix Dialog), `focus-visible` 스타일, 44px 터치 영역, WCAG 2.1 AA 대비를 맞춘 색상 토큰
 
 ## 기술 스택
@@ -25,6 +26,7 @@
 | Content   | PostgreSQL(Neon) + Prisma, Markdown 렌더링(`unified` 파이프라인, `shiki`) |
 | Auth      | Auth.js v5 + GitHub OAuth (허용 목록은 DB의 `User.role = ADMIN`)          |
 | Font      | Pretendard (`next/font/local`)                                            |
+| Motion    | CSS 우선, 메뉴 exit·스크롤 reveal은 `motion` (`LazyMotion` + `m.*`)       |
 | Tooling   | ESLint, Prettier, pnpm                                                    |
 | Deploy    | Vercel (GitHub 연동 자동 배포)                                            |
 
@@ -55,7 +57,7 @@ docs/                설계 · 결정 기록
 
 ## 설계에서 신경 쓴 점
 
-- **Server Component 기본**: 클라이언트 컴포넌트는 모바일 메뉴, 현재 메뉴 표시, 오류 경계 3개뿐입니다. 반응형은 JS 없이 CSS로 처리합니다.
+- **Server Component 기본**: 클라이언트 컴포넌트는 메뉴(모바일 메뉴·Admin 드로어·현재 메뉴 표시), 폼·에디터, 모션 래퍼(`Reveal`, `MotionProvider`), 오류 경계로 한정합니다. 페이지 전체를 클라이언트로 만들지 않고, 반응형은 JS 없이 CSS로 처리합니다.
 - **콘텐츠 경계**: 페이지는 `lib/content/`의 함수(`getPosts`, `getProject` 등)로만 데이터를 읽습니다. 처음엔 파일에서 읽다가 Phase 2에서 이 함수 내부만 DB 조회로 바꿨고, 페이지 코드는 거의 그대로 유지했습니다. 기존 파일은 `prisma/seed.ts`가 DB로 옮기는 원본으로 남아 있습니다.
 - **관리자 권한은 요청마다 DB로 확인**: 세션(JWT)은 힌트일 뿐이라, 보호된 페이지와 Server Action은 `requireAdmin()`으로 DB의 ADMIN 여부를 다시 확인합니다. 관리자를 제거하면 바로 접근이 막힙니다.
 - **Markdown 보안**: Markdown 안의 raw HTML은 버리고, `rehype-sanitize`를 거친 결과만 렌더링합니다. 플러그인 순서가 바뀌어 목차 링크가 깨지면 빌드가 실패하도록 검증을 넣었습니다.
