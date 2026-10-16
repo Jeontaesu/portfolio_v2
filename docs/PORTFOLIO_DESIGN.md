@@ -191,7 +191,9 @@ ME FLOW                       Projects  Blog  About  Career  Contact
 
 ### 5.2 Home
 
-순서: `Hero → Selected Works → About → Career → Blog Preview → Contact → Footer`
+순서: `Hero → In Focus → Selected Works → Blog Preview → About(+Toolkit) → Career → Contact → Footer`
+
+> 2026-10-17 Figma 시안(`mefloweb · 에디토리얼 포트폴리오`)의 구조를 반영했다. 색은 시안이 아니라 §2 토큰을 그대로 쓴다. 시안의 책상 사진(About)과 주제별 읽기 섹션은 에셋·콘텐츠가 없어 아직 만들지 않았다. 아래 와이어프레임은 이전 구조이며 순서만 갱신했다.
 
 **Hero**
 ```text

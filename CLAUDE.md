@@ -114,7 +114,7 @@ Public — Phase 1 (app/(site)/)  Admin — Phase 2 (app/admin/)
                                 /admin/settings   ─┘
 ```
 
-- Home 흐름: `Hero → Selected Works → About → Career → Blog Preview → Contact → Footer` (Skills는 About 안에 포함)
+- Home 흐름: `Hero → In Focus → Selected Works → Blog Preview → About(+Toolkit) → Career → Contact → Footer` (Skills는 About 안의 Toolkit에 포함, 2026-10-17 디자인 개편)
 - Phase 1의 `/resume`은 PDF 다운로드 링크 + 요약, `/contact`는 이메일·GitHub 링크만 (폼 없음).
 - Public과 Admin은 레이아웃을 공유하지 않는다. primitive(Button, Input, Dialog 등)만 공유.
 - MVP 이후 라우트는 사이드바에서 숨기거나 disabled로 표시한다.
