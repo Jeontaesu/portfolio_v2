@@ -206,7 +206,7 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **오류 메시지**: 로그인 실패는 "등록되어 있지 않습니다"와 일반 오류 두 가지만 보여준다. 허용된 계정 목록이나 실패 원인을 노출하지 않는다.
 - **노출 차단**: `/admin`은 `noindex` metadata, `robots.txt`의 `Disallow: /admin, /api/`.
 - **아이콘**: lucide-react 1.x에는 브랜드 아이콘(`Github`)이 없다. 아이콘 라이브러리를 추가하지 않고 범용 `LogIn`을 썼다 (`CLAUDE.md §6`: 아이콘은 lucide 하나).
-- **검증 (2026-10-15)**: 실제 GitHub 로그인 없이, `AUTH_SECRET`으로 세션 쿠키를 만들어 `next start`에서 11개를 확인했다. 쿠키 없음·깨진 쿠키·DB에 없는 사용자·VIEWER는 로그인 페이지로, ADMIN은 대시보드로 이동하고, 로그인 페이지 루프가 없고, 로그인 오류 문구와 noindex가 나오고, `/api/auth/providers`가 github를 반환한다. **GitHub OAuth 왕복(승인 → 콜백 → 세션)은 브라우저에서 아직 확인하지 않았다.**
+- **검증 (2026-10-15)**: 실제 GitHub 로그인 없이, `AUTH_SECRET`으로 세션 쿠키를 만들어 `next start`에서 11개를 확인했다. 쿠키 없음·깨진 쿠키·DB에 없는 사용자·VIEWER는 로그인 페이지로, ADMIN은 대시보드로 이동하고, 로그인 페이지 루프가 없고, 로그인 오류 문구와 noindex가 나오고, `/api/auth/providers`가 github를 반환한다. **GitHub OAuth 왕복(승인 → 콜백 → 세션)은 2026-10-16 로컬 `pnpm dev`에서 로그인 성공을 확인했다. Vercel 프로덕션(프로덕션용 OAuth App, 별도 Callback URL)에서도 같은 날 로그인이 정상 동작했다.**
 - **발견한 점**: `next start`(production 모드)는 `UntrustedHost`로 모든 인증 요청을 500으로 거부한다. Vercel은 `VERCEL` 변수로 자동 신뢰되고 `next dev`도 문제없다. 코드에서 `trustHost: true`로 열지 않고, 로컬 production 테스트 때만 `AUTH_TRUST_HOST=true`를 준다.
 - **날짜**: 2026-10-15
 
