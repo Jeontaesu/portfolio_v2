@@ -1,13 +1,22 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type MouseEvent, type ReactNode } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Menu, X } from "lucide-react";
 
 // Below lg the sidebar becomes a drawer. Radix Dialog provides focus trap, Esc, scroll lock and focus return.
+// The admin layout stays mounted across navigation, so the drawer must close itself when a link is used.
+// The links are shared with the desktop sidebar (outside any Dialog), so Dialog.Close cannot wrap them;
+// a click on any anchor inside the drawer closes it instead.
 export function AdminMobileNav({ children }: { children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+
+  function closeOnLinkClick(event: MouseEvent<HTMLElement>) {
+    if (event.target instanceof Element && event.target.closest("a[href]")) setOpen(false);
+  }
+
   return (
-    <Dialog.Root>
+    <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger
         className="-mr-2 inline-flex size-11 cursor-pointer items-center justify-center rounded-sm hover:bg-border/60"
         aria-label="메뉴 열기"
@@ -16,7 +25,10 @@ export function AdminMobileNav({ children }: { children: ReactNode }) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-foreground/40" />
-        <Dialog.Content className="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] overflow-y-auto bg-surface shadow-md">
+        <Dialog.Content
+          onClick={closeOnLinkClick}
+          className="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] overflow-y-auto bg-surface shadow-md"
+        >
           <Dialog.Title className="sr-only">관리자 메뉴</Dialog.Title>
           <Dialog.Description className="sr-only">관리자 페이지로 이동합니다.</Dialog.Description>
           <Dialog.Close
