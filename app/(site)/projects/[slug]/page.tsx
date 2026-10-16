@@ -35,7 +35,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
   const { previous, next } = await getAdjacentProjects(slug);
 
   return (
-    <article className="container-page py-20 lg:py-32">
+    <article className="container-page pt-8 pb-16 lg:pt-12 lg:pb-24">
       <Link
         href="/projects"
         className="inline-flex min-h-11 items-center gap-1 text-body-sm text-secondary hover:text-foreground"
@@ -45,8 +45,8 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
       </Link>
 
       <header className="mt-6 flex max-w-3xl flex-col gap-4">
-        <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
-          Case Study
+        <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
+          Case Study · {project.role}
         </p>
         <h1 className="text-h1">{project.title}</h1>
         <p className="text-body-lg text-secondary">{project.summary}</p>
@@ -87,7 +87,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
         </div>
       )}
 
-      <dl className="mt-12 grid grid-cols-1 gap-6 border-y border-border py-8 md:grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
+      <dl className="mt-12 grid grid-cols-1 gap-6 border-y border-foreground py-8 md:grid-cols-[repeat(auto-fit,minmax(0,1fr))]">
         <div>
           <dt className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
             Role
@@ -117,7 +117,7 @@ export default async function ProjectPage({ params }: PageProps<"/projects/[slug
       {(previous || next) && (
         <nav
           aria-label="프로젝트 이동"
-          className="mt-20 flex flex-col justify-between gap-6 border-t border-border pt-8 sm:flex-row"
+          className="mt-20 flex flex-col justify-between gap-6 border-t border-foreground pt-8 sm:flex-row"
         >
           {previous ? (
             <Link href={`/projects/${previous.slug}`} className="flex min-h-11 flex-col">

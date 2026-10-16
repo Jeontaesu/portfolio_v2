@@ -44,7 +44,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
   };
 
   return (
-    <article className="container-page py-20 lg:py-32">
+    <article className="container-page pt-8 pb-16 lg:pt-12 lg:pb-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }}
@@ -57,7 +57,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
         Back to Blog
       </Link>
       <header className="mt-6 flex max-w-3xl flex-col gap-4">
-        <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
+        <p className="text-caption font-semibold tracking-[0.08em] text-primary uppercase">
           {post.category?.name ?? UNCATEGORIZED_LABEL}
         </p>
         <h1 className="text-h1">{post.title}</h1>
@@ -66,7 +66,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
           {post.readingMinutes} min read
         </p>
       </header>
-      <div className="mt-12 grid grid-cols-1 gap-10 border-t border-border pt-10 lg:grid-cols-12">
+      <div className="mt-12 grid grid-cols-1 gap-10 border-t border-foreground pt-10 lg:grid-cols-12">
         <div className="lg:order-2 lg:col-span-3">
           <TableOfContents items={post.toc} />
         </div>

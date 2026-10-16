@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { PageHeader } from "@/components/layout/page-header";
 import { ProfileLinks } from "@/components/layout/profile-links";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -11,14 +12,11 @@ export const metadata: Metadata = pageMetadata({
 
 export default function ContactPage() {
   return (
-    <div className="container-page py-20 lg:py-32">
-      <header className="flex max-w-3xl flex-col gap-4">
-        <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
-          Contact
-        </p>
-        <h1 className="text-h1">함께 일하고 싶으시다면 연락 주세요.</h1>
-      </header>
-      <ProfileLinks className="mt-12 gap-x-8 text-body-lg" />
+    <div className="container-page pt-12 pb-16 lg:pt-20 lg:pb-24">
+      <PageHeader overline="Let's work together" title="함께 일하고 싶으시다면 연락 주세요." />
+      <div className="mt-12 grid gap-6 border-t border-foreground pt-10 lg:grid-cols-12">
+        <ProfileLinks variant="rows" className="text-body-lg lg:col-span-6 lg:col-start-7" />
+      </div>
     </div>
   );
 }

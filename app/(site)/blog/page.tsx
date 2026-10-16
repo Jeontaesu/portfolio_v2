@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CategoryFilter } from "@/components/features/blog/category-filter";
+import { PageHeader } from "@/components/layout/page-header";
 import { PostListItem } from "@/components/features/blog/post-list-item";
 import { getPostCategories, getPosts } from "@/lib/content/posts";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -21,17 +22,13 @@ export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
   const posts = await getPosts({ category });
 
   return (
-    <div className="container-page py-20 lg:py-32">
-      <header className="flex flex-col gap-4">
-        <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
-          Blog
-        </p>
-        <h1 className="text-h1">기술 블로그</h1>
-        <p className="max-w-2xl text-body-lg text-secondary">
-          직접 겪은 문제와 해결 과정을 기록합니다.
-        </p>
-      </header>
-      <div className="mt-10">
+    <div className="container-page pt-12 pb-16 lg:pt-20 lg:pb-24">
+      <PageHeader
+        overline="Technical Blog"
+        title="기술 블로그"
+        description="직접 겪은 문제와 해결 과정을 기록합니다."
+      />
+      <div className="mt-12 border-t border-foreground pt-8">
         <CategoryFilter categories={categories} current={category} />
       </div>
       {posts.length > 0 ? (
@@ -48,7 +45,7 @@ export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
           {category && (
             <Link
               href="/blog"
-              className="mt-4 inline-flex min-h-11 items-center text-primary underline underline-offset-4"
+              className="mt-4 inline-flex min-h-11 items-center text-body-sm font-semibold text-primary"
             >
               전체 글 보기
             </Link>

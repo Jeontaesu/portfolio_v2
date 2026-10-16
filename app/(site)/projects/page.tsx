@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { PageHeader } from "@/components/layout/page-header";
 import { ProjectGrid } from "@/components/features/projects/project-grid";
 import { getProjects } from "@/lib/content/projects";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -14,17 +15,13 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   return (
-    <div className="container-page py-20 lg:py-32">
-      <header className="flex flex-col gap-4">
-        <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
-          Projects
-        </p>
-        <h1 className="text-h1">프로젝트</h1>
-        <p className="max-w-2xl text-body-lg text-secondary">
-          결과물보다 문제를 어떻게 풀었는지를 중심으로 정리했습니다.
-        </p>
-      </header>
-      <div className="mt-12">
+    <div className="container-page pt-12 pb-16 lg:pt-20 lg:pb-24">
+      <PageHeader
+        overline="Projects"
+        title="프로젝트"
+        description="결과물보다 문제를 어떻게 풀었는지를 중심으로 정리했습니다."
+      />
+      <div className="mt-12 border-t border-foreground pt-10">
         {projects.length > 0 ? (
           <ProjectGrid projects={projects} headingLevel="h2" />
         ) : (
