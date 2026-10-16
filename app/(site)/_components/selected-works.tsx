@@ -9,23 +9,25 @@ export async function SelectedWorks() {
   const projects = await getFeaturedProjects();
 
   return (
-    <section aria-labelledby="works-title" className="container-page py-20 lg:py-32">
+    <section aria-labelledby="works-title" className="container-page py-16 lg:py-24">
       <SectionHeader
         id="works-title"
         overline="Selected Works"
-        title="실무에서 해결했던 문제와 직접 만든 프로젝트를 소개합니다."
-      />
-      <div className="mt-12">
-        {projects.length > 0 ? (
-          <>
-            <ProjectGrid projects={projects} />
+        title="실무에서 만든 웹, 그 안의 문제 해결"
+        action={
+          projects.length > 0 && (
             <Link
               href="/projects"
-              className="mt-12 inline-flex min-h-11 items-center text-primary underline underline-offset-4"
+              className="inline-flex min-h-11 items-center text-body-sm font-semibold text-primary"
             >
-              View all projects
+              프로젝트 전체 보기<span aria-hidden="true">&nbsp;→</span>
             </Link>
-          </>
+          )
+        }
+      />
+      <div className="mt-10">
+        {projects.length > 0 ? (
+          <ProjectGrid projects={projects} variant="equal" />
         ) : (
           <p className="border-t border-border pt-8 text-body text-secondary">
             Case Study를 준비하고 있습니다.
