@@ -13,6 +13,8 @@
 - **About · Career · Resume · Contact**: 경력 데이터 한 곳(`content/profile.ts`)에서 렌더링
 - **SEO**: 페이지별 metadata·canonical·Open Graph, 빌드 시 생성하는 OG 이미지, sitemap, robots, JSON-LD
 - **Admin**: GitHub 로그인(Auth.js), DB의 ADMIN 허용 목록 확인, `noindex`인 보호 영역. Dashboard(실집계), 글·프로젝트·카테고리 CRUD, Draft/Publish, Markdown Write/Preview, 프로젝트 정렬.
+- **컴포넌트 가이드** (`/guide`): Colors · Typography와 Button · Form controls · Badge · Pagination · EmptyState · ErrorState · Skeleton · ConfirmDelete 등 UI 컴포넌트를 상태별 데모, Props 표, 사용 코드로 보여 줍니다. Storybook 대신 같은 토큰·같은 빌드의 일반 페이지로 만들었고, 검색에는 노출하지 않습니다(`noindex`).
+- **로딩·오류 상태**: `Skeleton`(`/blog`와 Admin 로딩 화면)과 `ErrorState`(공개·Admin 오류 화면)로 loading / empty / error 상태를 공통 컴포넌트로 처리합니다. 오류 원문은 화면에 보이지 않습니다.
 - **모션**: 대부분의 hover·전환은 CSS이고, `motion`은 메뉴 닫힘(exit) 애니메이션과 스크롤 reveal에만 씁니다. `prefers-reduced-motion`을 존중하고, 첫 화면 콘텐츠(LCP)에는 reveal을 쓰지 않습니다.
 - **접근성**: Skip link, 키보드로 쓸 수 있는 모바일 메뉴(Radix Dialog), `focus-visible` 스타일, 44px 터치 영역, WCAG 2.1 AA 대비를 맞춘 색상 토큰
 
@@ -35,9 +37,11 @@
 ```text
 app/
   (site)/            Public 라우트. Home 섹션은 _components/
+  admin/             Admin CMS (로그인 / 보호 영역)
+  guide/             컴포넌트 가이드 (별도 레이아웃, noindex)
   sitemap.ts, robots.ts, opengraph-image.tsx, not-found.tsx
 components/
-  ui/                도메인 무관 primitive (Button, Badge, ExternalLink, MarkdownContent)
+  ui/                도메인 무관 primitive (Button, Badge, Input, FormField, Skeleton, ErrorState, EmptyState ...)
   layout/            SiteShell, Header, Footer, MobileNav, SkipLink
   features/          blog/, projects/, career/
 content/
@@ -71,7 +75,7 @@ docs/                설계 · 결정 기록
 필요: Node 24 이상(`.nvmrc`), pnpm 12.11.2(`packageManager` 필드), Neon PostgreSQL
 
 ```bash
-pnpm install        # postinstall에서 Prisma 클라이언트 생성
+pnpm install        # postinstall에서 Prisma 클라이언트 생성 (pnpm build도 먼저 생성)
 cp .env.example .env.local   # 값 채우기 (아래)
 pnpm dev            # http://localhost:3000
 ```
@@ -91,18 +95,18 @@ pnpm dev            # http://localhost:3000
 
 Windows에서 Node를 직접 설치했다면 nvm-windows의 전환이 막힐 수 있고, corepack 0.36은 pnpm 12 실행 파일을 찾지 못했습니다. 이 환경에서는 `npm install -g pnpm@12.11.2`로 설치했습니다.
 
-| 명령어            | 설명                                        |
-| ----------------- | ------------------------------------------- |
-| `pnpm dev`        | 개발 서버                                   |
-| `pnpm build`      | 프로덕션 빌드 (OG 이미지·sitemap 생성 포함) |
-| `pnpm start`      | 빌드 결과 실행                              |
-| `pnpm lint`       | ESLint                                      |
-| `pnpm typecheck`  | `next typegen && tsc --noEmit`              |
-| `pnpm format`     | Prettier                                    |
-| `pnpm db:migrate` | 개발용 migration 생성·적용                  |
-| `pnpm db:deploy`  | migration 적용만                            |
-| `pnpm db:seed`    | `content/`의 파일을 DB로 이전               |
-| `pnpm db:studio`  | Prisma Studio                               |
+| 명령어            | 설명                                                             |
+| ----------------- | ---------------------------------------------------------------- |
+| `pnpm dev`        | 개발 서버                                                        |
+| `pnpm build`      | Prisma 클라이언트 생성 후 프로덕션 빌드 (OG 이미지·sitemap 포함) |
+| `pnpm start`      | 빌드 결과 실행                                                   |
+| `pnpm lint`       | ESLint                                                           |
+| `pnpm typecheck`  | `next typegen && tsc --noEmit`                                   |
+| `pnpm format`     | Prettier                                                         |
+| `pnpm db:migrate` | 개발용 migration 생성·적용                                       |
+| `pnpm db:deploy`  | migration 적용만                                                 |
+| `pnpm db:seed`    | `content/`의 파일을 DB로 이전                                    |
+| `pnpm db:studio`  | Prisma Studio                                                    |
 
 ## 콘텐츠 추가
 
