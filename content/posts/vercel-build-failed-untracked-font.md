@@ -1,6 +1,6 @@
 ---
 title: 로컬 빌드는 통과했는데 Vercel 배포만 ENOENT로 실패한 이유
-slug: vercel-build-failed-untracked-font
+slug: vercel-enoent
 category: web
 excerpt: OG 이미지가 읽는 폰트 파일이 .gitignore에 걸려 커밋되지 않았고, 로컬 빌드는 통과했지만 Vercel 빌드는 ENOENT로 실패했습니다. 원인과 재발 방지 절차를 정리합니다.
 publishedAt: 2026-10-14

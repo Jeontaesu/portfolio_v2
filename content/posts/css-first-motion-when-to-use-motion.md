@@ -1,6 +1,6 @@
 ---
 title: 스크롤 등장 애니메이션을 CSS로 만들었다가 motion으로 바꾼 이유
-slug: css-first-motion-when-to-use-motion
+slug: css-first-motion
 category: frontend
 excerpt: animation-timeline으로 만든 스크롤 reveal이 Firefox에서 동작하지 않아 motion으로 바꿨습니다. CSS 우선 원칙에서 JS 라이브러리를 쓰는 기준과 LCP, reduced motion 처리를 정리합니다.
 publishedAt: 2026-10-17
