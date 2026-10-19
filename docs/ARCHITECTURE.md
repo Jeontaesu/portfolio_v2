@@ -39,7 +39,7 @@ app/(site)/   ← Server Component 기본, 빌드 시 정적 생성 (/blog 만 �
 | `/admin/categories`, `/new`, `/[id]` | 구현됨 (삭제 시 글은 미분류) |
 | `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF·Email·Velog 값 연결됨) |
 
-| `/guide`, `/guide/<컴포넌트>` | 구현됨 (컴포넌트 가이드 13페이지, Responsive 포함. 공개 사이트 레이아웃과 분리, noindex, robots Disallow, sitemap 제외. 헤더·모바일 메뉴·푸터에서 "Components"로 링크. D-029) |
+| `/guide`, `/guide/<컴포넌트>` | 구현됨 (컴포넌트 가이드 14페이지, Responsive·MobileNav 포함. 공개 사이트 레이아웃과 분리, noindex, robots Disallow, sitemap 제외. 헤더·모바일 메뉴·푸터에서 "Components"로 링크. D-029) |
 
 SEO 파일: `app/sitemap.ts`, `app/robots.ts`, `app/opengraph-image.tsx`, `blog/[slug]`·`projects/[slug]`의 `opengraph-image.tsx`, `app/not-found.tsx`, `app/(site)/error.tsx`. 페이지 metadata는 `lib/seo/metadata.ts`의 `pageMetadata()`로 title·description·canonical·Open Graph를 함께 만든다 (D-021).
 
@@ -150,6 +150,7 @@ DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-19 (4)**: 가이드에 `MobileNav` 데모 페이지와 `MotionProvider`(가이드 레이아웃) 추가. `MobileNav`에 데모용 `alwaysVisible` prop 추가 (기본 동작 불변, D-029).
 - **2026-10-19 (3)**: Home에 `ComponentGuide` 섹션(Selected Works 다음)과 가이드 `Responsive` 페이지 추가. 섹션의 주제 링크 3개는 각각 가이드의 해당 페이지로 연결 (D-029).
 - **2026-10-19 (2)**: 컴포넌트 가이드 `/guide` 추가 (`app/guide/`: 레이아웃, `_components/`의 GuideNav·GuidePage·Demo·PropsTable·CodeBlock·BreakpointBadge, 컴포넌트별 페이지). `ErrorState`에 `headingLevel` 추가. 새 페이지는 `app/guide/<slug>/page.tsx`와 `guide-nav-items.ts` 항목을 함께 추가한다 (D-029).
 - **2026-10-19**: `Skeleton`·`SkeletonRegion`·`ErrorState` 추가, Admin/공개 `error.tsx`와 Admin `loading.tsx`를 이 컴포넌트로 교체, `/blog/loading.tsx` 신설. 의존성 추가 없음.

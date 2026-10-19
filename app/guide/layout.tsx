@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { SkipLink } from "@/components/layout/skip-link";
+import { MotionProvider } from "@/components/ui/motion-provider";
 
 import { BreakpointBadge } from "./_components/breakpoint-badge";
 import { GuideNav } from "./_components/guide-nav";
@@ -16,17 +17,20 @@ export const metadata: Metadata = {
 
 export default function GuideLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-dvh lg:flex">
-      <SkipLink />
-      <GuideNav />
-      <main
-        id="main-content"
-        tabIndex={-1}
-        className="min-w-0 flex-1 px-5 py-10 outline-none md:px-8 lg:px-12 lg:py-14"
-      >
-        <div className="max-w-4xl">{children}</div>
-      </main>
-      <BreakpointBadge />
-    </div>
+    // MotionProvider: guide demos (MobileNav) use `m.*`, which throws without LazyMotion (CLAUDE.md §6).
+    <MotionProvider>
+      <div className="min-h-dvh lg:flex">
+        <SkipLink />
+        <GuideNav />
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="min-w-0 flex-1 px-5 py-10 outline-none md:px-8 lg:px-12 lg:py-14"
+        >
+          <div className="max-w-4xl">{children}</div>
+        </main>
+        <BreakpointBadge />
+      </div>
+    </MotionProvider>
   );
 }

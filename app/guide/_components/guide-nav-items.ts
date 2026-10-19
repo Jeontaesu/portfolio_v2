@@ -34,6 +34,9 @@ export const GUIDE_GROUPS = [
   },
   {
     label: "Overlay",
-    items: [{ slug: "confirm-delete", label: "ConfirmDelete" }],
+    items: [
+      { slug: "confirm-delete", label: "ConfirmDelete" },
+      { slug: "mobile-nav", label: "MobileNav" },
+    ],
   },
 ] as const;
