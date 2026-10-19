@@ -6,6 +6,8 @@ type ErrorStateProps = {
   /** "page" fills a public route (overline + h1); "inline" is a compact block for Admin. */
   variant?: "page" | "inline";
   title?: string;
+  /** Heading level of the title. h1 when the error replaces the page; lower when it sits under another h1. */
+  headingLevel?: "h1" | "h2" | "h3";
   description?: string;
   /** Next step, usually a retry Button. The caller owns the handler, so this stays a Server-safe component. */
   action?: ReactNode;
@@ -18,6 +20,7 @@ type ErrorStateProps = {
 export function ErrorState({
   variant = "inline",
   title = "문제가 발생했습니다.",
+  headingLevel: Heading = "h1",
   description = "잠시 후 다시 시도해 주세요.",
   action,
 }: ErrorStateProps) {
@@ -36,7 +39,7 @@ export function ErrorState({
           Error
         </p>
       )}
-      <h1 className={isPage ? "text-h1" : "text-h3"}>{title}</h1>
+      <Heading className={isPage ? "text-h1" : "text-h3"}>{title}</Heading>
       <p className={cn("text-secondary", isPage ? "max-w-2xl text-body-lg" : "text-body")}>
         {description}
       </p>

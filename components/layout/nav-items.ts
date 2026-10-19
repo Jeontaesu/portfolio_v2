@@ -4,6 +4,7 @@ export const NAV_ITEMS = [
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/career", label: "Career" },
+  { href: "/guide", label: "Components" },
   { href: "/resume", label: "Resume" },
   { href: "/contact", label: "Contact" },
 ] as const;
@@ -15,6 +16,7 @@ export const MAIN_NAV_ITEMS = [
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/career", label: "Career" },
+  { href: "/guide", label: "Components" },
 ] as const;
 
 export const RESUME_NAV_ITEM = { href: "/resume", label: "Resume" } as const;

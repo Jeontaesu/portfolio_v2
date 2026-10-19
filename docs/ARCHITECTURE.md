@@ -39,6 +39,8 @@ app/(site)/   ← Server Component 기본, 빌드 시 정적 생성 (/blog 만 �
 | `/admin/categories`, `/new`, `/[id]` | 구현됨 (삭제 시 글은 미분류) |
 | `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF·Email·Velog 값 연결됨) |
 
+| `/guide`, `/guide/<컴포넌트>` | 구현됨 (컴포넌트 가이드 12페이지. 공개 사이트 레이아웃과 분리, noindex, robots Disallow, sitemap 제외. 헤더·모바일 메뉴·푸터에서 "Components"로 링크. D-029) |
+
 SEO 파일: `app/sitemap.ts`, `app/robots.ts`, `app/opengraph-image.tsx`, `blog/[slug]`·`projects/[slug]`의 `opengraph-image.tsx`, `app/not-found.tsx`, `app/(site)/error.tsx`. 페이지 metadata는 `lib/seo/metadata.ts`의 `pageMetadata()`로 title·description·canonical·Open Graph를 함께 만든다 (D-021).
 
 ## 2-1. 인증 구조 (Week 5)
@@ -148,6 +150,7 @@ DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-19 (2)**: 컴포넌트 가이드 `/guide` 추가 (`app/guide/`: 레이아웃, `_components/`의 GuideNav·GuidePage·Demo·PropsTable·CodeBlock·BreakpointBadge, 컴포넌트별 페이지). `ErrorState`에 `headingLevel` 추가. 새 페이지는 `app/guide/<slug>/page.tsx`와 `guide-nav-items.ts` 항목을 함께 추가한다 (D-029).
 - **2026-10-19**: `Skeleton`·`SkeletonRegion`·`ErrorState` 추가, Admin/공개 `error.tsx`와 Admin `loading.tsx`를 이 컴포넌트로 교체, `/blog/loading.tsx` 신설. 의존성 추가 없음.
 - **2026-10-15 (3)**: Admin CMS(사이드바 셸, Dashboard 집계, 글·프로젝트·카테고리 CRUD, Markdown Preview, 삭제 확인)와 Zod 검증 추가. `/admin/posts` 목록 제목 레벨을 h2로 정리 (D-026).
 - **2026-10-15 (2)**: Auth.js v5 + GitHub 로그인, `requireAdmin()` 가드, `/admin/login`·보호된 Admin 레이아웃·Dashboard 자리 표시, robots에서 `/admin` 차단 (D-025).

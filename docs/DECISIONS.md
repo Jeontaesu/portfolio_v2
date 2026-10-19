@@ -250,3 +250,15 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **범위 밖**: Admin은 장식 모션을 넣지 않았다.
 - **검증**: `typecheck`, `lint`, `pnpm build` 통과. 프로덕션 서버의 HTML에서 `data-reveal` 요소가 `opacity:0`으로 렌더되는 것을 확인했다. 실제 움직임(메뉴 exit, reveal, reduced motion)과 번들 크기 영향은 아직 브라우저에서 확인·측정하지 않았다.
 - **날짜**: 2026-10-17
+
+## D-029. 컴포넌트 가이드 페이지: Storybook 대신 `/guide`
+
+- **배경**: UI 컴포넌트를 한곳에서 상태별로 확인할 페이지가 없었다. `CLAUDE.md`는 Storybook을 MVP 이후로 미뤘다. 사용자가 KOSMCO 프로젝트(`ui/` + `app/guide/components/*`) 구조를 참고해 Storybook처럼 보이는 가이드 페이지를 요청했다 (2026-10-19).
+- **KOSMCO에서 가져온 것은 구조뿐**: 사이드바 목록(그룹별) + 컴포넌트당 1페이지 + 데모 / Props 표 / 사용법 코드. 코드는 복사하지 않았다 (`CLAUDE.md §2`: KOSMCO는 참고용). SCSS·CSS Modules·`classnames` 대신 Tailwind와 현재 토큰, 뷰포트 배지는 JS 리스너 대신 CSS 범위 표시(`md:hidden` 등)로 바꿨다 (viewport JS 감지 금지).
+- **Storybook을 쓰지 않은 이유**: 별도 빌드·설정·의존성이 커서 지금 단계에 과하다. 이 사이트의 primitive 10여 개는 일반 Next.js 페이지로 같은 토큰·같은 빌드에서 확인하는 편이 유지 비용이 작다. trade-off: Storybook의 controls·a11y 애드온·자동 문서화는 없다. 상태는 직접 나열한다.
+- **위치와 노출**: `app/guide/`는 `(site)` 밖의 별도 레이아웃(SkipLink + 사이드바 + main). 도구 성격이라 `noindex`, sitemap 제외, `robots.txt`에 `/guide` Disallow. 프로덕션에서도 열리고, 지원처에 보여주려는 목적(사용자 요청, 2026-10-19)으로 헤더·모바일 메뉴·푸터에 "Components" 링크를 두었다 (`nav-items.ts`). 가이드 사이드바 맨 위에는 사이트로 돌아가는 링크가 있다. 검색 노출은 원하지 않아 noindex는 유지한다. 숨기려면 `notFound()`로 막고 링크를 지우면 된다.
+- **새 페이지 규칙**: 컴포넌트를 추가하면 `app/guide/<slug>/page.tsx`와 `_components/guide-nav-items.ts`에 함께 추가한다. Props 표와 코드 예시는 수동이라 컴포넌트 API가 바뀌면 같이 고쳐야 한다.
+- **다룬 것**: Colors, Typography, Button, Form controls(Input·Textarea·Select·CheckboxField·FormField), Badge, Pagination, ExternalLink, EmptyState, ErrorState, Skeleton, ConfirmDelete. 색 값과 대비는 `PORTFOLIO_DESIGN.md §2`에서 옮긴 값이다. Tabs·MobileNav·Reveal·SubmitButton·MarkdownContent는 아직 넣지 않았다.
+- **한계**: ConfirmDelete 데모의 action은 아무것도 하지 않아 삭제 버튼을 눌러도 대화상자가 열린 채 남는다(실제 앱은 redirect). ErrorState 데모는 `role="alert"`라 페이지를 열 때 낭독된다.
+- **검증**: `typecheck`, `lint`, `pnpm build` 통과. `next start`에서 12개 경로 200, noindex 메타와 robots Disallow 확인. 화면 모양(390 / 768 / 1440), 키보드 이동, 스크린 리더는 아직 직접 확인하지 않았다.
+- **날짜**: 2026-10-19
