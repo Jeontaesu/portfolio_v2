@@ -5,6 +5,7 @@ export const GUIDE_GROUPS = [
     items: [
       { slug: "colors", label: "Colors" },
       { slug: "typography", label: "Typography" },
+      { slug: "responsive", label: "Responsive" },
     ],
   },
   {

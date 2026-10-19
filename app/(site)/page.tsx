@@ -1,6 +1,7 @@
 import { About } from "./_components/about";
 import { BlogPreview } from "./_components/blog-preview";
 import { Career } from "./_components/career";
+import { ComponentGuide } from "./_components/component-guide";
 import { Contact } from "./_components/contact";
 import { Hero } from "./_components/hero";
 import { InFocus } from "./_components/in-focus";
@@ -12,6 +13,7 @@ export default function HomePage() {
       <Hero />
       <InFocus />
       <SelectedWorks />
+      <ComponentGuide />
       <BlogPreview />
       <About />
       <Career />

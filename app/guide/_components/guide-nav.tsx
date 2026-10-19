@@ -23,7 +23,7 @@ export function GuideNav() {
         <Link href="/guide">Components</Link>
       </p>
       <p className="mt-1 text-caption text-secondary">MEFLOWEB UI guide</p>
-      <div className="mt-6 flex flex-col gap-6 md:flex-row md:flex-wrap md:gap-x-10 lg:flex-col lg:gap-6">
+      <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-6 md:flex md:flex-row md:flex-wrap md:gap-x-10 lg:flex-col lg:gap-6">
         {GUIDE_GROUPS.map((group) => (
           <div key={group.label}>
             <p className="text-caption font-semibold tracking-[0.08em] text-secondary uppercase">
