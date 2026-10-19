@@ -13,7 +13,7 @@
 - **About · Career · Resume · Contact**: 경력 데이터 한 곳(`content/profile.ts`)에서 렌더링
 - **SEO**: 페이지별 metadata·canonical·Open Graph, 빌드 시 생성하는 OG 이미지, sitemap, robots, JSON-LD
 - **Admin**: GitHub 로그인(Auth.js), DB의 ADMIN 허용 목록 확인, `noindex`인 보호 영역. Dashboard(실집계), 글·프로젝트·카테고리 CRUD, Draft/Publish, Markdown Write/Preview, 프로젝트 정렬.
-- **컴포넌트 가이드** (`/guide`): Colors · Typography와 Button · Form controls · Badge · Pagination · EmptyState · ErrorState · Skeleton · ConfirmDelete 등 UI 컴포넌트를 상태별 데모, Props 표, 사용 코드로 보여 줍니다. Storybook 대신 같은 토큰·같은 빌드의 일반 페이지로 만들었고, 검색에는 노출하지 않습니다(`noindex`).
+- **컴포넌트 가이드** (`/guide`): Colors · Typography · Responsive와 Button · Form controls · Badge · Pagination · EmptyState · ErrorState · Skeleton · ConfirmDelete 등 UI 컴포넌트를 상태별 데모, Props 표, 사용 코드로 보여 줍니다. Storybook 대신 같은 토큰·같은 빌드의 일반 페이지로 만들었고, 검색에는 노출하지 않습니다(`noindex`).
 - **로딩·오류 상태**: `Skeleton`(`/blog`와 Admin 로딩 화면)과 `ErrorState`(공개·Admin 오류 화면)로 loading / empty / error 상태를 공통 컴포넌트로 처리합니다. 오류 원문은 화면에 보이지 않습니다.
 - **모션**: 대부분의 hover·전환은 CSS이고, `motion`은 메뉴 닫힘(exit) 애니메이션과 스크롤 reveal에만 씁니다. `prefers-reduced-motion`을 존중하고, 첫 화면 콘텐츠(LCP)에는 reveal을 쓰지 않습니다.
 - **접근성**: Skip link, 키보드로 쓸 수 있는 모바일 메뉴(Radix Dialog), `focus-visible` 스타일, 44px 터치 영역, WCAG 2.1 AA 대비를 맞춘 색상 토큰

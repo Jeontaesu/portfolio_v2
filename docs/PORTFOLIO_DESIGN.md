@@ -193,7 +193,7 @@ ME FLOW                       Projects  Blog  About  Career  Contact
 
 ### 5.2 Home
 
-순서: `Hero → In Focus → Selected Works → Blog Preview → About(+Toolkit) → Career → Contact → Footer`
+순서: `Hero → In Focus → Selected Works → UI Component Guide → Blog Preview → About(+Toolkit) → Career → Contact → Footer`
 
 > 2026-10-17 Figma 시안(`mefloweb · 에디토리얼 포트폴리오`)의 구조를 반영했다. 색은 시안이 아니라 §2 토큰을 그대로 쓴다. 시안의 책상 사진(About)과 주제별 읽기 섹션은 에셋·콘텐츠가 없어 아직 만들지 않았다. 아래 와이어프레임은 이전 구조이며 순서만 갱신했다.
 
@@ -222,6 +222,10 @@ Web / Accessibility / Responsive
 View Case Study →
 ```
 - 큰 이미지 중심. 모든 항목을 같은 카드로 반복하지 않고 Grid 변형(2/3 + 1/3, 전폭 등)으로 Editorial 리듬.
+
+**UI Component Guide** (2026-10-19)
+- 흰 surface 카드 + 테두리. overline, h2, 설명, 주제 링크 3개(컴포넌트 구조 / 상태 표현 / 반응형 적용), 가이드 링크.
+- 주제 링크는 각각 `/guide/button`, `/guide/skeleton`, `/guide/responsive`로 이동한다 (장식 라벨로 두지 않는다). 문구는 가이드에 실제로 있는 내용만 말한다.
 
 **About**
 ```text

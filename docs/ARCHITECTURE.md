@@ -39,7 +39,7 @@ app/(site)/   ← Server Component 기본, 빌드 시 정적 생성 (/blog 만 �
 | `/admin/categories`, `/new`, `/[id]` | 구현됨 (삭제 시 글은 미분류) |
 | `/about`, `/career`, `/resume`, `/contact` | 구현됨 (`content/profile.ts` 데이터. Resume PDF·Email·Velog 값 연결됨) |
 
-| `/guide`, `/guide/<컴포넌트>` | 구현됨 (컴포넌트 가이드 12페이지. 공개 사이트 레이아웃과 분리, noindex, robots Disallow, sitemap 제외. 헤더·모바일 메뉴·푸터에서 "Components"로 링크. D-029) |
+| `/guide`, `/guide/<컴포넌트>` | 구현됨 (컴포넌트 가이드 13페이지, Responsive 포함. 공개 사이트 레이아웃과 분리, noindex, robots Disallow, sitemap 제외. 헤더·모바일 메뉴·푸터에서 "Components"로 링크. D-029) |
 
 SEO 파일: `app/sitemap.ts`, `app/robots.ts`, `app/opengraph-image.tsx`, `blog/[slug]`·`projects/[slug]`의 `opengraph-image.tsx`, `app/not-found.tsx`, `app/(site)/error.tsx`. 페이지 metadata는 `lib/seo/metadata.ts`의 `pageMetadata()`로 title·description·canonical·Open Graph를 함께 만든다 (D-021).
 
@@ -85,11 +85,11 @@ components/ui/       input, select, textarea, checkbox-field, form-field, submit
 app/layout.tsx            <html lang="ko">, Pretendard(next/font/local), <body> 기본 스타일, 기본 metadata
 └─ app/(site)/layout.tsx  SiteShell: SkipLink → SiteHeader → <main id="main-content"> → SiteFooter
    (app/not-found.tsx도 SiteShell을 직접 사용)
-   └─ app/(site)/page.tsx Hero → SelectedWorks → About → Career → BlogPreview → Contact
+   └─ app/(site)/page.tsx Hero → InFocus → SelectedWorks → ComponentGuide → BlogPreview → About → Career → Contact
 ```
 
 - `<main>`은 `tabIndex={-1}`로 SkipLink의 이동 대상이 된다 (`outline-none`).
-- Home 섹션은 `app/(site)/_components/`에 둔다 (Home 전용이라 라우트 가까이에 위치). 현재: `hero`, `selected-works`, `about`, `career`, `blog-preview`, `contact`, `section-header`.
+- Home 섹션은 `app/(site)/_components/`에 둔다 (Home 전용이라 라우트 가까이에 위치). 현재: `hero`, `in-focus`, `selected-works`, `component-guide`, `about`, `career`, `blog-preview`, `contact`, `section-header`.
 - Admin은 `app/admin/`에 별도 레이아웃이다 (Public과 레이아웃 공유 안 함, primitive와 SkipLink만 공유).
   - `app/admin/layout.tsx`: `noindex` metadata만.
   - `app/admin/login/`: 보호 영역 밖.
@@ -150,6 +150,7 @@ DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-19 (3)**: Home에 `ComponentGuide` 섹션(Selected Works 다음)과 가이드 `Responsive` 페이지 추가. 섹션의 주제 링크 3개는 각각 가이드의 해당 페이지로 연결 (D-029).
 - **2026-10-19 (2)**: 컴포넌트 가이드 `/guide` 추가 (`app/guide/`: 레이아웃, `_components/`의 GuideNav·GuidePage·Demo·PropsTable·CodeBlock·BreakpointBadge, 컴포넌트별 페이지). `ErrorState`에 `headingLevel` 추가. 새 페이지는 `app/guide/<slug>/page.tsx`와 `guide-nav-items.ts` 항목을 함께 추가한다 (D-029).
 - **2026-10-19**: `Skeleton`·`SkeletonRegion`·`ErrorState` 추가, Admin/공개 `error.tsx`와 Admin `loading.tsx`를 이 컴포넌트로 교체, `/blog/loading.tsx` 신설. 의존성 추가 없음.
 - **2026-10-15 (3)**: Admin CMS(사이드바 셸, Dashboard 집계, 글·프로젝트·카테고리 CRUD, Markdown Preview, 삭제 확인)와 Zod 검증 추가. `/admin/posts` 목록 제목 레벨을 h2로 정리 (D-026).
