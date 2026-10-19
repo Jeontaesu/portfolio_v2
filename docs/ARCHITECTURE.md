@@ -97,7 +97,7 @@ app/layout.tsx            <html lang="ko">, Pretendard(next/font/local), <body> 
 
 ```text
 components/
-  ui/       badge, button, external-link, markdown-content   도메인 무관 primitive
+  ui/       badge, button, external-link, markdown-content, skeleton, error-state 외 폼·피드백 primitive   도메인 무관 primitive
   layout/   site-shell, site-header, site-footer, mobile-nav, nav-link, skip-link, profile-links, nav-items.ts
   features/ blog/ (category-filter, post-list-item, table-of-contents)
             projects/ (project-grid)
@@ -105,6 +105,8 @@ components/
 ```
 
 - **Button, Badge**: CVA로 variant × size를 정의한다. CVA는 이 두 곳에만 쓴다 (D-016).
+- **Skeleton / SkeletonRegion**: 블록은 `aria-hidden`이고 펄스는 `motion-safe:animate-pulse`. 묶음을 `SkeletonRegion`(`role="status"` + sr-only 문구)으로 감싸 로딩을 한 번만 알린다. 사용처: Admin `loading.tsx`, `/blog/loading.tsx`. 공개 사이트의 다른 라우트는 정적 생성이라 loading 상태가 없고, 요청 시 렌더링되는 `/blog`만 해당한다.
+- **ErrorState**: `variant="page"`(overline + h1, 공개 `error.tsx`) / `"inline"`(Admin). `role="alert"`, 일반 문구만. 재시도 버튼은 호출하는 `error.tsx`(Client)가 `action`으로 넘긴다.
 - **Badge**: tinted 배경 대신 흰 surface + 상태 텍스트 토큰 + 점 (D-015).
 - **ExternalLink**: `target="_blank"`, `rel="noopener noreferrer"`, `↗` 아이콘, sr-only "(새 창)". 외부 링크는 이 컴포넌트로만 만든다.
 - **NavLink / NAV_ITEMS**: 데스크톱·모바일 메뉴가 같은 목록과 같은 링크 컴포넌트를 쓴다.
@@ -146,6 +148,7 @@ DB 스크립트: `pnpm db:migrate`(개발, migration 생성), `db:deploy`(적용
 
 구조가 바뀐 이유와 영향을 짧게 남긴다. 기술 선택의 이유는 `docs/DECISIONS.md`에 둔다.
 
+- **2026-10-19**: `Skeleton`·`SkeletonRegion`·`ErrorState` 추가, Admin/공개 `error.tsx`와 Admin `loading.tsx`를 이 컴포넌트로 교체, `/blog/loading.tsx` 신설. 의존성 추가 없음.
 - **2026-10-15 (3)**: Admin CMS(사이드바 셸, Dashboard 집계, 글·프로젝트·카테고리 CRUD, Markdown Preview, 삭제 확인)와 Zod 검증 추가. `/admin/posts` 목록 제목 레벨을 h2로 정리 (D-026).
 - **2026-10-15 (2)**: Auth.js v5 + GitHub 로그인, `requireAdmin()` 가드, `/admin/login`·보호된 Admin 레이아웃·Dashboard 자리 표시, robots에서 `/admin` 차단 (D-025).
 - **2026-10-15**: Prisma schema·init migration, DB 클라이언트, seed, `lib/content/`의 DB 조회 전환, 카테고리 DB화 (D-024).
