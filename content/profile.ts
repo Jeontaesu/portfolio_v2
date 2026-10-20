@@ -137,6 +137,7 @@ export const career: readonly CareerEntry[] = [
         period: "2024.06 — 2025.07",
         tech: ["HTML5", "CSS3", "JavaScript", "반응형 웹"],
         work: ["PC/모바일 웹 리뉴얼 및 퍼블리싱", "UX 개선 중심 인터랙션 적용"],
+        result: ["클라이언트 만족도 증가로 장기 계약 성사"],
       },
       {
         name: "연세대학교 브로슈어 기반 마이크로사이트 구축",
