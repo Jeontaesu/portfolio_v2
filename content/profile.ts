@@ -39,7 +39,7 @@ export const profile = {
   /** Total career as of 2026-10 (11 years 1 month). */
   careerYears: 11,
   /** Path under public/ once the PDF exists, e.g. "/resume.pdf". Undefined hides the download link. */
-  resumePdf: "/resume_20261014.pdf" as string | undefined,
+  resumePdf: "/resume_jeontaesu.pdf" as string | undefined,
   skills: {
     working: [
       {
