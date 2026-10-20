@@ -27,7 +27,7 @@ export default function CareerPage() {
             aria-labelledby={`career-${index}`}
             className="grid gap-8 border-b border-border py-10 lg:grid-cols-12 lg:gap-6"
           >
-            <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-24 lg:col-span-4 lg:self-start">
               <p className="text-body-sm text-secondary">
                 {formatPeriod(entry.startedAt, entry.endedAt)}
               </p>
