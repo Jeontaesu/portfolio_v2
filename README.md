@@ -150,3 +150,7 @@ frontmatter가 잘못되면 seed가 어떤 파일의 어떤 필드인지 알려 
 - [x] Phase 1: Public 사이트 배포 (Home, Projects, Blog, About, Career, Resume, Contact, SEO)
 - [x] Phase 2: PostgreSQL + Prisma, 파일 → DB 이전, Auth.js 관리자 로그인, Admin CMS(CRUD, Draft/Publish)
 - [ ] 이후: 태그, 검색, 이미지 업로드, 댓글, 조회수
+
+## 라이선스
+
+소스 코드는 [MIT](LICENSE)입니다. 블로그 글, Case Study, 프로필·경력 데이터, 이미지, 이력서는 MIT에 포함되지 않으며 저작권은 저에게 있습니다. 회사·고객사 이름과 로고는 각 소유자의 것이고 과거 작업을 설명하는 용도로만 썼습니다. 자세한 범위는 [LICENSE](LICENSE)에 있습니다.
