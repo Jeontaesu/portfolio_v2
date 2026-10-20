@@ -86,17 +86,18 @@
 
 ## 3. 명령어
 
-pnpm 기준. Phase 1 스크립트는 `package.json`과 일치하며, Phase 2 줄은 아직 목표다.
+pnpm 기준. `package.json`의 스크립트와 일치한다.
 
 ```bash
 pnpm dev                 # 개발 서버
 pnpm build               # 프로덕션 빌드
 pnpm lint                # ESLint
 pnpm typecheck           # next typegen && tsc --noEmit
-pnpm format              # Prettier
-# Phase 2
-pnpm prisma migrate dev  # 스키마 변경 → migration
-pnpm prisma db seed      # 시드 데이터
+pnpm format              # Prettier (format:check는 검사만)
+pnpm db:migrate          # prisma migrate dev — 스키마 변경 → migration
+pnpm db:deploy           # prisma migrate deploy — 운영 DB에 적용
+pnpm db:seed             # 시드 데이터
+pnpm db:studio           # Prisma Studio
 ```
 
 ---
