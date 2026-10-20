@@ -27,7 +27,7 @@
 | UI        | Radix UI primitives, lucide-react                                         |
 | Content   | PostgreSQL(Neon) + Prisma, Markdown 렌더링(`unified` 파이프라인, `shiki`) |
 | Auth      | Auth.js v5 + GitHub OAuth (허용 목록은 DB의 `User.role = ADMIN`)          |
-| Font      | Pretendard (`next/font/local`)                                            |
+| Font      | Pretendard (`next/font/local`, 사용 글자만 담은 core + 나머지 한글 분리)  |
 | Motion    | CSS 우선, 메뉴 exit·스크롤 reveal은 `motion` (`LazyMotion` + `m.*`)       |
 | Tooling   | ESLint, Prettier, pnpm                                                    |
 | Deploy    | Vercel (GitHub 연동 자동 배포)                                            |
@@ -53,9 +53,11 @@ lib/
   content/           DB에서 콘텐츠 읽기 (server-only). 페이지는 이 함수로만 데이터를 읽는다
   db/                Prisma 클라이언트
   auth/              Auth.js 설정, 관리자 확인, requireAdmin()
+  fonts/             Pretendard core / hangul 폰트 설정 (D-030)
   markdown/          Markdown → sanitize된 HTML, 목차 추출
   seo/               사이트 URL, metadata 헬퍼, OG 이미지
 prisma/              schema, migrations, seed
+scripts/             폰트 서브셋 생성 스크립트 (Python, fonttools)
 docs/                설계 · 결정 기록
 ```
 
@@ -128,6 +130,20 @@ status: DRAFT # 공개하려면 PUBLISHED
 frontmatter가 잘못되면 seed가 어떤 파일의 어떤 필드인지 알려 주며 실패합니다.
 
 **Case Study**: `content/projects.ts`에 메타데이터를 추가하고, 본문은 `content/projects/<slug>.md`에 씁니다.
+
+## 성능 · 접근성 측정
+
+배포 URL을 Lighthouse 12.8.2로 측정했습니다 (2026-10-20, 페이지당 1회, 모바일은 기본 프로필).
+
+| 페이지           | 모바일 성능 | 모바일 LCP | 데스크톱 성능 | 접근성 · Best Practices · SEO |
+| ---------------- | ----------- | ---------- | ------------- | ----------------------------- |
+| Home             | 85          | 3.3초      | 100           | 100 · 100 · 100               |
+| /projects        | 81          | 3.7초      | 100           | 100 · 100 · 100               |
+| /about           | 83          | 3.5초      | 100           | 100 · 100 · 100               |
+| /projects/[slug] | 84          | 3.3초      | 100           | 100 · 100 · 100               |
+| /blog/[slug]     | 85          | 3.5초      | 100           | 100 · 100 · 100               |
+
+처음 측정에서는 모바일 LCP가 13.5–14.2초(성능 50–70점)였습니다. 한글 웹폰트 약 2.3MB가 원인으로 보여 사용 글자 위주로 나눴고(약 250KB), 과정은 [D-030](docs/DECISIONS.md)에 기록했습니다. 모바일 TBT(280–350ms)는 아직 원인을 확인하지 않았습니다. 이 점수는 자동 도구 결과이고 스크린 리더 낭독이나 실기기 확인을 대신하지 않습니다.
 
 ## 로드맵
 
