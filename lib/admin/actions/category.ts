@@ -8,7 +8,13 @@ import type { FormState } from "@/lib/admin/form-state";
 import { revalidatePublicSite } from "@/lib/admin/revalidate";
 import { categorySchema } from "@/lib/validations/category";
 
-import { fieldError, isUniqueViolation, unexpectedError, validationError } from "./helpers";
+import {
+  fieldError,
+  isNotFound,
+  isUniqueViolation,
+  unexpectedError,
+  validationError,
+} from "./helpers";
 
 export async function saveCategory(
   id: string | null,
@@ -57,14 +63,7 @@ export async function deleteCategory(id: string): Promise<void> {
     await db.category.delete({ where: { id } });
   } catch (error) {
     // Already deleted in another tab: the goal is met.
-    if (!(
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "P2025"
-    )) {
-      throw error;
-    }
+    if (!isNotFound(error)) throw error;
   }
   revalidatePublicSite();
   redirect("/admin/categories");

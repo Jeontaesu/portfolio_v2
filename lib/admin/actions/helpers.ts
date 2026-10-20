@@ -26,6 +26,11 @@ export function unexpectedError(context: string, error: unknown): FormState {
   return { status: "error", message: GENERIC_ERROR };
 }
 
+/** Prisma "record not found" (P2025): the row was already deleted, e.g. in another tab. */
+export function isNotFound(error: unknown): boolean {
+  return typeof error === "object" && error !== null && "code" in error && error.code === "P2025";
+}
+
 /** Prisma unique-constraint violation (a race between the pre-check and the write). */
 export function isUniqueViolation(error: unknown): boolean {
   return typeof error === "object" && error !== null && "code" in error && error.code === "P2002";

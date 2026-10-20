@@ -8,7 +8,13 @@ import type { FormState } from "@/lib/admin/form-state";
 import { revalidatePublicSite } from "@/lib/admin/revalidate";
 import { postSchema } from "@/lib/validations/post";
 
-import { fieldError, isUniqueViolation, unexpectedError, validationError } from "./helpers";
+import {
+  fieldError,
+  isNotFound,
+  isUniqueViolation,
+  unexpectedError,
+  validationError,
+} from "./helpers";
 
 /**
  * Create (id = null) or update a post. Every Server Action is a public POST endpoint, so it checks the
@@ -75,14 +81,7 @@ export async function deletePost(id: string): Promise<void> {
     await db.post.delete({ where: { id } });
   } catch (error) {
     // Already deleted in another tab: the goal (the post is gone) is met.
-    if (!(
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "P2025"
-    )) {
-      throw error;
-    }
+    if (!isNotFound(error)) throw error;
   }
   revalidatePublicSite();
   redirect("/admin/posts");

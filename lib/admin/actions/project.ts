@@ -8,7 +8,13 @@ import type { FormState } from "@/lib/admin/form-state";
 import { revalidatePublicSite } from "@/lib/admin/revalidate";
 import { projectSchema } from "@/lib/validations/project";
 
-import { fieldError, isUniqueViolation, unexpectedError, validationError } from "./helpers";
+import {
+  fieldError,
+  isNotFound,
+  isUniqueViolation,
+  unexpectedError,
+  validationError,
+} from "./helpers";
 
 export async function saveProject(
   id: string | null,
@@ -75,14 +81,7 @@ export async function deleteProject(id: string): Promise<void> {
     await db.project.delete({ where: { id } });
   } catch (error) {
     // Already deleted in another tab: the goal is met.
-    if (!(
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error &&
-      error.code === "P2025"
-    )) {
-      throw error;
-    }
+    if (!isNotFound(error)) throw error;
   }
   revalidatePublicSite();
   redirect("/admin/projects");
