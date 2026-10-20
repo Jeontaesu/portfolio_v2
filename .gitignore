@@ -45,11 +45,14 @@ next-env.d.ts
 /.claude/settings.local.json
 
 # Pretendard: only the files the build reads are tracked.
-# woff2 → app/layout.tsx (next/font). woff → lib/seo/og-image.tsx (Satori cannot read woff2).
+# woff2 → lib/fonts/pretendard.ts (next/font, core + Hangul). woff → lib/seo/og-image.tsx (Satori cannot read woff2).
 public/fonts/*
 !public/fonts/Pretendard-Regular.woff2
 !public/fonts/Pretendard-SemiBold.woff2
 !public/fonts/Pretendard-Bold.woff2
+!public/fonts/Pretendard-Hangul-Regular.woff2
+!public/fonts/Pretendard-Hangul-SemiBold.woff2
+!public/fonts/Pretendard-Hangul-Bold.woff2
 !public/fonts/Pretendard-Regular.woff
 !public/fonts/Pretendard-Bold.woff
 
