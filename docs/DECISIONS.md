@@ -264,3 +264,14 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **한계**: ConfirmDelete 데모의 action은 아무것도 하지 않아 삭제 버튼을 눌러도 대화상자가 열린 채 남는다(실제 앱은 redirect). ErrorState 데모는 `role="alert"`라 페이지를 열 때 낭독된다.
 - **검증**: `typecheck`, `lint`, `pnpm build` 통과. `next start`에서 12개 경로 200, noindex 메타와 robots Disallow 확인. 화면 모양(390 / 768 / 1440), 키보드 이동, 스크린 리더는 아직 직접 확인하지 않았다.
 - **날짜**: 2026-10-19
+
+## D-030. Pretendard 서브셋: 모바일 LCP 13초대 → 3초 안팎
+
+- **발견**: 배포 URL을 Lighthouse 12.8.2(모바일 기본 프로필, 시뮬레이션 스로틀링)로 측정하자 5개 페이지 모두 LCP가 13.5–14.2초, 성능 50–70점이었다. 접근성·Best Practices·SEO는 전부 100. 페이지마다 LCP 요소가 달라도(h1, 이미지) 값이 비슷해 공통 원인을 의심했고, 전송량이 가장 큰 것이 Pretendard woff2 3개(각 약 770–790KB, 합계 약 2.3MB, 한글 전체 글리프)였다.
+- **결정**: `next/font/local` 구조는 유지하고 폰트를 둘로 나눈다. `core`(KS X 1001 한글 중 **사이트 코드·콘텐츠에 실제로 쓰인 음절** + 영문·기호, 약 84KB × 3)는 preload하고, `hangul`(나머지 KS X 1001 음절, 약 130KB × 3)은 `preload: false` + `unicode-range: U+AC00-D7A3`로 둔다. 폰트 스택에서 core가 먼저라서 core에 없는 음절이 화면에 나올 때만 hangul 파일을 받는다. 생성은 `scripts/subset-pretendard.py`, 설정은 `lib/fonts/pretendard.ts`.
+- **검토한 대안**: (1) KS X 1001만 남긴 한 벌 서브셋(각 약 200KB, 합계 610KB). 로컬에서 LCP가 5.7–6.0초로 남아 채택하지 않았다. (2) Pretendard dynamic-subset(조각 20여 개 + CSS `unicode-range`). 효과는 비슷하지만 `next/font`의 preload·폰트 관리를 거치지 않고 CSS를 직접 관리해야 해서 보류했다.
+- **trade-off**: Admin에서 새 글을 쓰다 core에 없는 음절이 나오면 그 페이지에서 hangul 파일(약 130KB)을 추가로 받는다. KS X 1001 밖의 음절은 폰트에 없어 시스템 글꼴로 대체된다. 폰트 스택에 `Malgun Gothic` 등이 있어 깨지지는 않지만 글자 모양이 달라질 수 있다. 새 글을 많이 쓴 뒤에는 스크립트로 core를 다시 만든다.
+- **변하지 않은 것**: 디자인 토큰, 굵기(400/600/700), 폰트 이름. OG 이미지용 `.woff`(`lib/seo/og-image.tsx`)는 서버에서만 읽어 그대로 둔다.
+- **측정 (로컬 `next start`, 모바일 프로필)**: Home 72점/LCP 3.4초(TBT 650ms, 측정 편차 있음), About 86/3.1초, Project 92/3.1초, Blog 93/2.9초. 접근성 100 유지. 폰트 전송량 약 2.3MB → 약 250KB.
+- **한계**: 위 수치는 배포 전 **로컬 빌드**라 Vercel(CDN, 압축)에서의 수치와 직접 비교할 수 없다. 배포 후 같은 조건으로 다시 측정해야 확정된다. LCP가 폰트 때문이라는 것은 용량·시간대와 폰트 축소 후 개선으로 판단한 것이고 다운로드를 막아 직접 검증하지는 않았다. core에 없는 음절 요청이 실제로 hangul 파일을 받는지도 브라우저에서 확인하지 않았다.
+- **날짜**: 2026-10-20
