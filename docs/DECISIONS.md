@@ -276,3 +276,13 @@ Chrome(Playwright)으로 390 / 768 / 1440px에서 검증하고 아래를 수정�
 - **한계**: 모바일 성능이 100이 아닌 것은 TBT 280–350ms와 LCP 3초대가 남아 있기 때문이며, 이번 변경은 폰트만 다뤘고 남은 원인은 확인하지 않았다. 페이지당 1회 측정이라 점수는 몇 점 단위 오차가 있다. LCP가 폰트 때문이라는 것은 용량·시간대와 폰트 축소 후 개선으로 판단한 것이고 다운로드를 막아 직접 검증하지는 않았다. core에 없는 음절 요청이 실제로 hangul 파일을 받는지도 브라우저에서 확인하지 않았다.
 - **배포 사고**: 새 `Pretendard-Hangul-*.woff2`가 `.gitignore`의 `public/fonts/*` 허용 목록에 없어 첫 푸시의 Vercel 빌드가 실패했다. 허용 목록에 추가해 해결했다. 새 파일을 만든 뒤 `git status`로 추적 여부를 확인하지 않은 것이 원인이다.
 - **날짜**: 2026-10-20
+
+## D-031. 보안 점검: 응답 헤더 4종 추가, CSP는 보류
+
+- **점검 범위**: 코드 리뷰. Admin 페이지·레이아웃, Server Action 4개 파일, `lib/admin/queries.ts`, Auth.js 설정, 공개 조회(DRAFT 차단), Markdown sanitize, `dangerouslySetInnerHTML` 2곳(Markdown 본문, JSON-LD), 원시 SQL 사용 여부. 배포 사이트는 비로그인 `/admin/dashboard`의 307, 로그인 페이지 noindex·no-store, 응답 헤더만 확인했다. **공격 시도, 인증 없이 Server Action을 직접 POST하는 테스트, 접근성 수동 점검은 하지 않았다.**
+- **결과**: 모든 Server Action과 Admin 조회가 검증보다 먼저 `requireAdmin()`을 호출하고, 이 함수가 매번 DB에서 ADMIN 여부를 다시 확인한다. 심각한 취약점은 찾지 못했다.
+- **추가한 것**: `next.config.ts`의 `headers()`로 `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`(Admin 클릭재킹 방지, 이 사이트는 자기 페이지를 iframe으로 쓰지 않는다), `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`(카메라·마이크·위치 차단). 로컬 `next start`에서 `/`, `/blog`, `/admin/login`, 리다이렉트 응답 모두에 나오는 것을 확인했다. 배포 후 확인은 아직 하지 않았다. HSTS는 Vercel이 이미 붙인다.
+- **CSP는 보류**: Next.js가 만드는 인라인 스크립트 때문에 nonce 방식(요청마다 동적 렌더링이 필요해 정적 페이지의 이점이 줄어든다)이나 `unsafe-inline` 허용 중 하나를 골라야 한다. `unsafe-inline`은 XSS 방어 효과가 크게 줄어든다. Markdown은 sanitize를 거치고 raw HTML을 버리므로 당장의 위험은 낮다고 판단해 따로 결정하기로 했다.
+- **그 밖의 변경**: 썸네일 경로 검증이 `..`를 막는다(`next/image`의 `src`로만 쓰여 실제 위험은 낮았다). 삭제 Action 3곳에 복사되어 있던 Prisma `P2025` 처리를 `isNotFound()`로 합쳤다.
+- **남긴 것**: `id`·`direction` 인자의 zod 검증은 넣지 않았다(관리자 전용, Prisma 파라미터화, `direction`은 런타임 체크 있음). 로그인 허용 목록은 GitHub가 주는 이메일을 믿는다. GitHub가 공개 이메일에 인증된 주소만 허용한다고 알고 있지만 공식 문서로 확인하지는 않았다. 레이트 리밋은 검토하지 않았다.
+- **날짜**: 2026-10-20
