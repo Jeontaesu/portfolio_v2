@@ -31,7 +31,7 @@ export const publicImagePathSchema = z
   .trim()
   .max(300, "경로가 너무 깁니다.")
   .regex(
-    /^\/(?!\/)[\w\-./]+\.(png|jpe?g|webp|avif|gif|svg)$/i,
+    /^\/(?!\/)(?!.*\.\.)[\w\-./]+\.(png|jpe?g|webp|avif|gif|svg)$/i,
     "/images/... 처럼 public 폴더 안의 이미지 경로를 입력해 주세요.",
   );
 
