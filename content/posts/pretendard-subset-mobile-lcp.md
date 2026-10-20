@@ -4,7 +4,7 @@ slug: pretendard-subset-mobile-lcp
 category: web
 excerpt: 접근성 100점인 사이트가 모바일 성능에서 50점이 나온 원인을 추적했습니다. 한글 웹폰트를 사이트에 쓰인 글자만 남기도록 나눠 LCP를 14초대에서 3초 안팎으로 줄인 과정과 trade-off를 정리합니다.
 publishedAt: 2026-10-20
-status: DRAFT
+status: PUBLISHED
 ---
 
 ## 문제
